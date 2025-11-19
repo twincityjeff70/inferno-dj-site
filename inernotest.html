@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DJ Inferno - Live Mix</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <!-- 
+        =========================================================
+        STEP 1: WIDGET SCRIPT INSERTED HERE
+        This script handles all real-time data updates (Now Playing, History, DJ).
+        =========================================================
+    -->
+    <script id='sonic_js' data-port='9812' src='https://my.idjstream.com/cp/widgets.js?r=802'></script>
+    
+    <style>
+        /* Custom Styles for the Inferno Vibe */
+        :root {
+            --primary-color: #ff4500; /* Orange Red */
+            --secondary-color: #8b0000; /* Dark Red */
+            --bg-dark: #0a0a0a;
+            --text-light: #e5e5e5;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Roboto', sans-serif;
+            background-image: 
+                radial-gradient(circle at 20% 30%, #1a0505 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, #1f0a0a 0%, transparent 50%);
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, .brand-font {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        /* Animated Background Glow */
+        .glow-box {
+            box-shadow: 0 0 15px rgba(255, 69, 0, 0.2);
+            transition: box-shadow 0.3s ease;
+        }
+        .glow-box:hover {
+            box-shadow: 0 0 25px rgba(255, 69, 0, 0.5);
+        }
+
+        /* Custom Audio Player Styling */
+        .player-container {
+            background: linear-gradient(145deg, #111, #161616);
+            border: 1px solid #333;
+        }
+        
+        .play-btn {
+            background: linear-gradient(45deg, #ff4500, #ff8c00);
+            transition: transform 0.2s, filter 0.2s;
+        }
+        .play-btn:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+        .play-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Equalizer Animation */
+        .equalizer {
+            display: flex;
+            gap: 3px;
+            height: 20px;
+            align-items: flex-end;
+        }
+        .bar {
+            width: 4px;
+            background-color: var(--primary-color);
+            animation: bounce 1s infinite ease-in-out;
+        }
+        .bar:nth-child(2) { animation-delay: 0.1s; }
+        .bar:nth-child(3) { animation-delay: 0.2s; }
+        .bar:nth-child(4) { animation-delay: 0.3s; }
+        .bar:nth-child(5) { animation-delay: 0.4s; }
+        
+        @keyframes bounce {
+            0%, 100% { height: 5px; }
+            50% { height: 20px; }
+        }
+        .stopped .bar {
+            animation: none;
+            height: 3px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+
+        /* Specific styles for the widget's output IDs */
+        #sonic_title {
+            /* Inheriting the desired styling for Now Playing */
+            font-size: 1.25rem; /* text-xl */
+            line-height: 1.75rem; /* text-xl */
+            font-weight: 700; /* font-bold */
+            color: white; /* text-white */
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis; /* truncate */
+        }
+        #sonic_history {
+            /* Basic styling for the list wrapper */
+            color: #9ca3af; /* text-gray-400 */
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center p-4 sm:p-8">
+
+    <!-- Main Container -->
+    <div class="max-w-4xl w-full space-y-8">
+
+        <!-- Header -->
+        <header class="text-center space-y-2 mb-10">
+            <h1 class="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-red-600 to-orange-500 uppercase tracking-widest drop-shadow-lg">
+                Inferno Nightclub
+            </h1>
+            <p class="text-gray-400 text-lg tracking-wide uppercase">Where the night catches fire</p>
+        </header>
+
+        <!-- DJ Profile & Player Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <!-- Left Column: DJ Profile -->
+            <div class="glow-box bg-zinc-900 rounded-xl p-6 flex flex-col items-center text-center border border-zinc-800 relative overflow-hidden">
+                
+                <!-- NEW DJ Status Indicator -->
+                <div id="djStatusIndicator" class="absolute top-4 right-4 flex items-center gap-2">
+                    <span id="djStatusDot" class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                    <span id="djStatusText" class="text-xs font-bold uppercase tracking-wider text-red-500">
+                        Loading...
+                    </span>
+                </div>
+                <!-- HIDDEN ELEMENT: Widget populates this with the bitrate -->
+                <div id="sonic_bitrate" style="display:none;"></div> 
+
+                <!-- DJ Image Placeholder -->
+                <div class="w-40 h-40 rounded-full border-4 border-orange-600/30 overflow-hidden mb-4 shadow-2xl">
+                    <!-- The widget can use the rnp_djimage ID to update the image source when a DJ is live -->
+                    <img id="rnp_djimage" src="https://api.dicebear.com/7.x/avataaars/svg?seed=DJRave" alt="DJ Profile" class="w-full h-full object-cover">
+                </div>
+                
+                <h2 class="text-2xl font-bold text-white mb-1">DJ RAVE</h2>
+                <p class="text-orange-500 text-sm uppercase font-bold mb-4">Resident DJ</p>
+                <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                    Spinning the darkest beats and highest energy tracks on the grid. Join me at Inferno for a night you won't remember... but will never forget.
+                </p>
+                
+                <!-- Second Life Location Link -->
+                <div class="flex flex-col items-center gap-2">
+                    <p class="text-sm font-bold text-gray-500 uppercase tracking-widest mt-2">Find Me In-World</p>
+                    <a href="http://maps.secondlife.com/secondlife/Nova%20Lake/67/154/107" 
+                       target="_blank" 
+                       class="text-orange-500 hover:text-white transition font-bold text-lg flex items-center gap-2 p-2 rounded-lg bg-zinc-800 hover:bg-orange-700/50">
+                        <i class="fas fa-map-marker-alt"></i> 
+                        INFERNO NIGHTCLUB
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Column: Player & Now Playing -->
+            <div class="space-y-6">
+                
+                <!-- Audio Player Card -->
+                <div class="player-container rounded-xl p-6 text-center relative overflow-hidden shadow-xl">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-600 to-red-600"></div>
+                    
+                    <div class="mb-6">
+                        <h3 class="text-gray-500 text-xs uppercase tracking-widest mb-2">Now Playing</h3>
+                        <!-- THIS ID WILL BE UPDATED BY THE WIDGET SCRIPT. -->
+                        <div id='sonic_title' class="text-xl md:text-2xl font-bold text-white truncate">
+                            Loading track title...
+                        </div>
+                    </div>
+
+                    <!-- Visualizer -->
+                    <div class="flex justify-center mb-6 stopped equalizer" id="visualizer">
+                        <div class="bar h-3"></div><div class="bar h-5"></div><div class="bar h-2"></div>
+                        <div class="bar h-6"></div><div class="bar h-4"></div>
+                    </div>
+
+                    <!-- Play Button -->
+                    <button id="playBtn" class="play-btn w-16 h-16 rounded-full flex items-center justify-center mx-auto text-white text-2xl shadow-lg outline-none focus:ring-4 focus:ring-orange-500/50">
+                        <i class="fas fa-play ml-1"></i>
+                    </button>
+                    
+                    <!-- Volume Slider -->
+                    <div class="mt-6 flex items-center justify-center gap-3 w-full max-w-xs mx-auto">
+                        <i class="fas fa-volume-down text-gray-500 text-xs"></i>
+                        <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.8" class="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-orange-500">
+                        <i class="fas fa-volume-up text-gray-500 text-xs"></i>
+                    </div>
+
+                    <!-- Hidden Audio Element -->
+                    <audio id="audioStream" preload="none"></audio>
+                </div>
+
+                <!-- Last 5 Songs List -->
+                <div class="bg-zinc-900/80 rounded-xl p-5 border border-zinc-800 backdrop-blur-sm">
+                    <h3 class="text-orange-500 text-xs font-bold uppercase tracking-wider mb-4 flex items-center gap-2">
+                        <i class="fas fa-history"></i> Recent Tracks
+                    </h3>
+                    <ul id="historyList" class="space-y-3 text-sm text-gray-400">
+                        <!-- THE WIDGET CONTENT IS INJECTED INTO THIS DIV -->
+                        <li>
+                            <div id='sonic_history'>
+                                <p class="p-2 text-xs text-zinc-600">Loading recent tracks from widget...</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-zinc-600 text-xs mt-12 pb-4">
+            <p>&copy; 2025 DJ Rave Wilder - Inferno Nightclub - Second Life. All Rights Reserved.</p>
+        </footer>
+
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        /**
+         * ==========================================
+         * PLAYER LOGIC (STILL REQUIRED)
+         * ==========================================
+         */
+        const audio = document.getElementById('audioStream');
+        const playBtn = document.getElementById('playBtn');
+        const playIcon = playBtn.querySelector('i');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const visualizer = document.getElementById('visualizer');
+        
+        let isPlaying = false;
+        
+        // This is the direct stream URL. We keep this to enable the HTML5 audio player.
+        const audioStreamURL = 'https://my.idjstream.com:9812'; 
+
+        // Set audio source (using the standard Shoutcast /; trick)
+        let streamSrc = audioStreamURL;
+        if (!streamSrc.endsWith('/') && !streamSrc.endsWith(';') && !streamSrc.endsWith('.mp3')) {
+            streamSrc += '/;';
+        }
+        audio.src = streamSrc;
+        audio.volume = 0.8;
+
+        playBtn.addEventListener('click', togglePlay);
+        volumeSlider.addEventListener('input', (e) => audio.volume = e.target.value);
+
+        function togglePlay() {
+            if (isPlaying) {
+                audio.pause();
+                playIcon.classList.remove('fa-pause');
+                playIcon.classList.add('fa-play');
+                playIcon.classList.add('ml-1'); 
+                visualizer.classList.add('stopped');
+                isPlaying = false;
+            } else {
+                // When we press play, attempt to load and play the stream
+                audio.load();
+                audio.play().then(() => {
+                    playIcon.classList.remove('fa-play');
+                    playIcon.classList.remove('ml-1');
+                    playIcon.classList.add('fa-pause');
+                    visualizer.classList.remove('stopped');
+                    isPlaying = true;
+                }).catch(err => {
+                    console.error("Playback error:", err);
+                    // Reverts play button if fails
+                    playIcon.classList.remove('fa-pause');
+                    playIcon.classList.add('fa-play');
+                    playIcon.classList.add('ml-1'); 
+                    // Changed from alert() to console.error() as per instructions
+                    console.error("Could not start audio playback. The stream might be offline or a connection issue occurred.");
+                });
+            }
+        }
+
+        /**
+         * ==========================================
+         * CORE WIDGET UTILITY FUNCTIONS
+         * ==========================================
+         */
+        const widgetBitrateOutput = document.getElementById('sonic_bitrate');
+        const widgetTitleOutput = document.getElementById('sonic_title');
+        const historyContainer = document.getElementById('sonic_history'); 
+        const djStatusText = document.getElementById('djStatusText');
+        const djStatusDot = document.getElementById('djStatusDot');
+        
+        /**
+         * Trims the number of history items displayed to a maximum of 5.
+         * This function is called instantly by the MutationObserver whenever the widget updates.
+         */
+        function trimHistoryList() {
+            const historyItems = historyContainer.children; 
+            const maxItems = 5;
+
+            // While the number of items is greater than our desired limit (5), remove the last item
+            while (historyItems.length > maxItems) {
+                historyContainer.removeChild(historyContainer.lastChild);
+            }
+        }
+
+        /**
+         * Updates the custom DJ/Stream status indicator based on the bitrate.
+         * This runs on a periodic timer.
+         */
+        function updateWidgetStatus() {
+            // Read the inner text of the hidden element populated by the widget
+            const currentBitrate = widgetBitrateOutput.innerText.trim();
+            const currentTitle = widgetTitleOutput.innerText.trim();
+
+            let statusText;
+            let statusClass;
+            let dotClass;
+
+            // 1. DJ LIVE CHECK (Highest priority - Bitrate is 320)
+            if (currentBitrate === '320') {
+                statusText = "DJ LIVE";
+                statusClass = 'text-green-500';
+                dotClass = 'bg-green-500';
+            } 
+            // 2. OFF AIR CHECK (High priority - Bitrate is 0 or empty, or title is a known placeholder)
+            else if (currentBitrate === '' || currentBitrate === '0' || currentTitle.toLowerCase().includes('offline') || currentTitle.toLowerCase().includes('loading') || currentTitle === '') {
+                statusText = "OFF AIR";
+                statusClass = 'text-red-500';
+                dotClass = 'bg-red-500';
+            } 
+            // 3. AUTODJ (Fallback - Bitrate is present, but not 320, meaning AutoDJ is playing)
+            else {
+                statusText = "AUTODJ";
+                statusClass = 'text-yellow-500'; 
+                dotClass = 'bg-yellow-500';
+            }
+
+            // Apply the new status
+            djStatusText.innerText = statusText;
+            djStatusText.className = `text-xs font-bold uppercase tracking-wider ${statusClass}`;
+            djStatusDot.className = `relative inline-flex rounded-full h-3 w-3 ${dotClass}`;
+
+            // Schedule the next check
+            setTimeout(updateWidgetStatus, 5000); 
+        }
+
+        // Delay the start of the status checker slightly to allow the widget to load and populate the first time
+        window.onload = function() {
+            // Ensure the bitrate element is available when the widget loads
+            const bitrateElement = document.createElement('div');
+            bitrateElement.id = 'sonic_bitrate';
+            bitrateElement.style.display = 'none';
+            document.body.appendChild(bitrateElement); 
+
+            // --- Start MutationObserver for instant trimming ---
+            if (historyContainer) {
+                const observer = new MutationObserver(function(mutationsList, observer) {
+                    // Run the trimming logic the moment the widget changes the content
+                    trimHistoryList();
+                });
+
+                // Configuration for the observer: watch for child list changes
+                const config = { childList: true };
+
+                // Start observing the target element
+                observer.observe(historyContainer, config);
+            }
+            // --- End MutationObserver ---
+
+            // Start the status checker after a short delay
+            setTimeout(updateWidgetStatus, 1500); 
+        }
+    </script>
+</body>
+</html>
