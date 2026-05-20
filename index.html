@@ -765,7 +765,7 @@
         <div class="event-day">WED</div>
         <div class="event-name">Rush Hour Wednesday</div>
         <div class="event-meta">
-          <span>May 20, 2026</span>
+          <span id="date-wednesday">Loading...</span>
           <span>Rush City</span>
           <span>Live Mixed EDM / House</span>
         </div>
@@ -776,7 +776,7 @@
         <div class="event-day">FRI</div>
         <div class="event-name">Inferno Friday</div>
         <div class="event-meta">
-          <span>May 22, 2026</span>
+          <span id="date-friday">Loading...</span>
           <span>Wilder Bay Retreat</span>
           <span>Live Mixed Dance / House / EDM</span>
         </div>
@@ -787,7 +787,7 @@
         <div class="event-day">SAT</div>
         <div class="event-name">Sinful Saturday</div>
         <div class="event-meta">
-          <span>May 23, 2026</span>
+          <span id="date-saturday">Loading...</span>
           <span>Dark Kinky Breeders</span>
           <span>Live Mixed Dance / House</span>
         </div>
@@ -798,7 +798,7 @@
         <div class="event-day">SUN</div>
         <div class="event-name">Rave on the Pier</div>
         <div class="event-meta">
-          <span>May 24, 2026</span>
+          <span id="date-sunday">Loading...</span>
           <span>Wilder Bay Retreat</span>
           <span>Soul / Jackin' House</span>
         </div>
@@ -890,6 +890,47 @@
 </footer>
 
 <script>
+  function nextWeekday(dayOfWeek) {
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const diff = (dayOfWeek - today.getDay() + 7) % 7;
+    const next = new Date(today);
+    next.setDate(today.getDate() + (diff === 0 ? 7 : diff));
+    return next;
+  }
+
+  function nextBiweekly(dayOfWeek, knownOnDate) {
+    const anchor = new Date(knownOnDate);
+    anchor.setHours(0,0,0,0);
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const msPerWeek = 7 * 24 * 60 * 60 * 1000;
+    const weeksSinceAnchor = Math.floor((today - anchor) / msPerWeek);
+    let candidate = new Date(anchor);
+    candidate.setDate(anchor.getDate() + Math.ceil(weeksSinceAnchor / 2) * 14);
+    while (candidate <= today) {
+      candidate.setDate(candidate.getDate() + 14);
+    }
+    return candidate;
+  }
+
+  function formatDate(date) {
+    return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  }
+
+  const dates = {
+    wednesday: nextWeekday(3),
+    friday: nextWeekday(5),
+    saturday: nextBiweekly(6, '2026-05-23'),
+    sunday: nextWeekday(0)
+  };
+
+  document.getElementById('date-wednesday').textContent = formatDate(dates.wednesday);
+  document.getElementById('date-friday').textContent = formatDate(dates.friday);
+  document.getElementById('date-saturday').textContent = formatDate(dates.saturday);
+  document.getElementById('date-sunday').textContent = formatDate(dates.sunday);
+</script>
+<script>
   const STREAM_URL = 'https://my.idjstream.com:9812/stream';
   const audio = document.getElementById('np-audio');
   const playBtn = document.getElementById('np-play');
@@ -963,3 +1004,4 @@
 </script>
 </body>
 </html>
+
