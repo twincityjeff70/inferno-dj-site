@@ -546,6 +546,26 @@
     border-color: var(--fire);
   }
 
+  .np-play {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--fire);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .np-play:hover { background: var(--ember); transform: scale(1.08); }
+  .np-play:active { transform: scale(0.95); }
+
+  .np-play svg { width: 14px; height: 14px; fill: #fff; margin-left: 2px; }
+  .np-play.playing svg { margin-left: 0; }
+
   /* NOW PLAYING */
   .nowplaying-bar {
     background: var(--dark2);
@@ -851,6 +871,9 @@
 
 <!-- NOW PLAYING BAR -->
 <div class="nowplaying-bar" id="np-bar">
+  <button class="np-play" id="np-play" aria-label="Play stream">
+    <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+  </button>
   <div class="np-indicator">
     <div class="np-dot" id="np-dot"></div>
     <div class="np-label" id="np-label">Live Now</div>
@@ -858,6 +881,7 @@
   <div class="np-track" id="np-track">Connecting to stream...</div>
   <div class="np-listeners" id="np-listeners"></div>
 </div>
+<audio id="np-audio" preload="none"></audio>
 
 <!-- FOOTER -->
 <footer>
@@ -866,6 +890,30 @@
 </footer>
 
 <script>
+  const STREAM_URL = 'https://my.idjstream.com:9812/stream';
+  const audio = document.getElementById('np-audio');
+  const playBtn = document.getElementById('np-play');
+  let playing = false;
+
+  const playIcon = `<svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>`;
+  const pauseIcon = `<svg viewBox="0 0 24 24" style="margin-left:0"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>`;
+
+  playBtn.addEventListener('click', () => {
+    if (!playing) {
+      audio.src = STREAM_URL;
+      audio.play();
+      playBtn.innerHTML = pauseIcon;
+      playBtn.classList.add('playing');
+      playing = true;
+    } else {
+      audio.pause();
+      audio.src = '';
+      playBtn.innerHTML = playIcon;
+      playBtn.classList.remove('playing');
+      playing = false;
+    }
+  });
+
   const STATS_URL = 'https://hidden-bread-eb16shoutcast-proxy.jeffconyers.workers.dev/';
 
   const npDot = document.getElementById('np-dot');
@@ -915,4 +963,3 @@
 </script>
 </body>
 </html>
-
