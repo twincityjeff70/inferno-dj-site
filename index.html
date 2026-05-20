@@ -759,53 +759,7 @@
   <div class="inner">
     <p class="section-label">On the Grid</p>
     <h2 class="section-title">Upcoming Events</h2>
-    <div class="events-grid">
-
-      <div class="event-card">
-        <div class="event-day">WED</div>
-        <div class="event-name">Rush Hour Wednesday</div>
-        <div class="event-meta">
-          <span id="date-wednesday">Loading...</span>
-          <span>Rush City</span>
-          <span>Live Mixed EDM / House</span>
-        </div>
-        <a class="event-tp" href="http://maps.secondlife.com/secondlife/Guyana%20Bay/237/40/22" target="_blank">Teleport In-World ↗</a>
-      </div>
-
-      <div class="event-card">
-        <div class="event-day">FRI</div>
-        <div class="event-name">Inferno Friday</div>
-        <div class="event-meta">
-          <span id="date-friday">Loading...</span>
-          <span>Wilder Bay Retreat</span>
-          <span>Live Mixed Dance / House / EDM</span>
-        </div>
-        <a class="event-tp" href="http://maps.secondlife.com/secondlife/PolyNation/229/191/2483" target="_blank">Teleport In-World ↗</a>
-      </div>
-
-      <div class="event-card">
-        <div class="event-day">SAT</div>
-        <div class="event-name">Sinful Saturday</div>
-        <div class="event-meta">
-          <span id="date-saturday">Loading...</span>
-          <span>Dark Kinky Breeders</span>
-          <span>Live Mixed Dance / House</span>
-        </div>
-        <a class="event-tp" href="http://maps.secondlife.com/secondlife/Duchess%20Island/161/229/2804" target="_blank">Teleport In-World ↗</a>
-      </div>
-
-      <div class="event-card">
-        <div class="event-day">SUN</div>
-        <div class="event-name">Rave on the Pier</div>
-        <div class="event-meta">
-          <span id="date-sunday">Loading...</span>
-          <span>Wilder Bay Retreat</span>
-          <span>Soul / Jackin' House</span>
-        </div>
-        <a class="event-tp" href="http://maps.secondlife.com/secondlife/PolyNation/192/220/22" target="_blank">Teleport In-World ↗</a>
-      </div>
-
-    </div>
+    <div class="events-grid" id="events-grid"></div>
   </div>
 </div>
 
@@ -895,7 +849,7 @@
     today.setHours(0,0,0,0);
     const diff = (dayOfWeek - today.getDay() + 7) % 7;
     const next = new Date(today);
-    next.setDate(today.getDate() + (diff === 0 ? 7 : diff));
+    next.setDate(today.getDate() + diff);
     return next;
   }
 
@@ -907,10 +861,8 @@
     const msPerWeek = 7 * 24 * 60 * 60 * 1000;
     const weeksSinceAnchor = Math.floor((today - anchor) / msPerWeek);
     let candidate = new Date(anchor);
-    candidate.setDate(anchor.getDate() + Math.ceil(weeksSinceAnchor / 2) * 14);
-    while (candidate <= today) {
-      candidate.setDate(candidate.getDate() + 14);
-    }
+    candidate.setDate(anchor.getDate() + Math.floor(weeksSinceAnchor / 2) * 14);
+    while (candidate < today) candidate.setDate(candidate.getDate() + 14);
     return candidate;
   }
 
@@ -918,17 +870,57 @@
     return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
   }
 
-  const dates = {
-    wednesday: nextWeekday(3),
-    friday: nextWeekday(5),
-    saturday: nextBiweekly(6, '2026-05-23'),
-    sunday: nextWeekday(0)
-  };
+  function dayLabel(date) {
+    return date.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
+  }
 
-  document.getElementById('date-wednesday').textContent = formatDate(dates.wednesday);
-  document.getElementById('date-friday').textContent = formatDate(dates.friday);
-  document.getElementById('date-saturday').textContent = formatDate(dates.saturday);
-  document.getElementById('date-sunday').textContent = formatDate(dates.sunday);
+  const events = [
+    {
+      name: 'Rush Hour Wednesday',
+      date: nextWeekday(3),
+      venue: 'Rush City',
+      genre: 'Live Mixed EDM / House',
+      url: 'http://maps.secondlife.com/secondlife/Guyana%20Bay/237/40/22'
+    },
+    {
+      name: 'Inferno Friday',
+      date: nextWeekday(5),
+      venue: 'Wilder Bay Retreat',
+      genre: 'Live Mixed Dance / House / EDM',
+      url: 'http://maps.secondlife.com/secondlife/PolyNation/229/191/2483'
+    },
+    {
+      name: 'Sinful Saturday',
+      date: nextBiweekly(6, '2026-05-23'),
+      venue: 'Dark Kinky Breeders',
+      genre: 'Live Mixed Dance / House',
+      url: 'http://maps.secondlife.com/secondlife/Duchess%20Island/161/229/2804'
+    },
+    {
+      name: 'Rave on the Pier',
+      date: nextWeekday(0),
+      venue: 'Wilder Bay Retreat',
+      genre: "Soul / Jackin' House",
+      url: 'http://maps.secondlife.com/secondlife/PolyNation/192/220/22'
+    }
+  ];
+
+  events.sort((a, b) => a.date - b.date);
+
+  const grid = document.getElementById('events-grid');
+  grid.innerHTML = events.map(e => `
+    <div class="event-card">
+      <div class="event-day">${dayLabel(e.date)}</div>
+      <div class="event-name">${e.name}</div>
+      <div class="event-meta">
+        <span>${formatDate(e.date)}</span>
+        <span>${e.venue}</span>
+        <span>${e.genre}</span>
+      </div>
+      <a class="event-tp" href="${e.url}" target="_blank">Teleport In-World ↗</a>
+    </div>
+  `).join('');
+
 </script>
 <script>
   const STREAM_URL = 'https://my.idjstream.com:9812/stream';
@@ -1004,4 +996,3 @@
 </script>
 </body>
 </html>
-
