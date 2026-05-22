@@ -924,13 +924,12 @@
 </script>
 <script>
   const STREAM_URL = 'https://stream.rsigalaxy.com/stream';
+  const STATS_URL = 'https://stream.rsigalaxy.com/status-json.xsl';
   const audio = document.getElementById('np-audio');
   const playBtn = document.getElementById('np-play');
   let playing = false;
-
   const playIcon = `<svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>`;
   const pauseIcon = `<svg viewBox="0 0 24 24" style="margin-left:0"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>`;
-
   playBtn.addEventListener('click', () => {
     if (!playing) {
       audio.src = STREAM_URL;
@@ -946,14 +945,10 @@
       playing = false;
     }
   });
-
-  const STATS_URL = 'https://hidden-bread-eb16shoutcast-proxy.jeffconyers.workers.dev/';
-
   const npDot = document.getElementById('np-dot');
   const npLabel = document.getElementById('np-label');
   const npTrack = document.getElementById('np-track');
   const npListeners = document.getElementById('np-listeners');
-
   function setOffAir() {
     npDot.classList.add('offline');
     npLabel.classList.add('offline');
@@ -962,7 +957,6 @@
     npTrack.style.color = 'var(--muted)';
     npListeners.textContent = '';
   }
-
   function setLive(track, listeners) {
     npDot.classList.remove('offline');
     npLabel.classList.remove('offline');
@@ -971,17 +965,19 @@
     npTrack.style.color = 'var(--text)';
     npListeners.innerHTML = listeners ? `<span>${listeners}</span> listeners` : '';
   }
-
   async function fetchNowPlaying() {
     try {
       const res = await fetch(STATS_URL, { signal: AbortSignal.timeout(5000) });
-      const xml = await res.text();
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(xml, 'text/xml');
-      const stream = doc.querySelector('STREAM');
-      const song = stream?.querySelector('SONGTITLE')?.textContent;
-      const listeners = stream?.querySelector('CURRENTLISTENERS')?.textContent;
-      if (song) {
+      const data = await res.json();
+      const source = data?.icestats?.source;
+      if (!source) { setOffAir(); return; }
+      // source can be an array (multiple mounts) or a single object
+      const mount = Array.isArray(source)
+        ? source.find(s => s.listenurl?.endsWith('/stream')) || source[0]
+        : source;
+      const song = mount?.title || mount?.song;
+      const listeners = mount?.listeners;
+      if (mount) {
         setLive(song, listeners);
       } else {
         setOffAir();
@@ -990,7 +986,6 @@
       setOffAir();
     }
   }
-
   fetchNowPlaying();
   setInterval(fetchNowPlaying, 15000);
 </script>
