@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DJ RAVE — Inferno</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
+<title>DJ RAVE — Inferno Nightclub</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -13,10 +13,13 @@
     --ember: #FF6D00;
     --gold: #FFB300;
     --dark: #080808;
-    --dark2: #111111;
+    --dark2: #0e0e0e;
     --dark3: #1a1a1a;
     --text: #f0f0f0;
     --muted: #888;
+    --glass: rgba(255,255,255,0.04);
+    --glass-border: rgba(255,255,255,0.08);
+    --glow: 0 0 20px rgba(255,61,0,0.3), 0 0 60px rgba(255,61,0,0.1);
   }
 
   html { scroll-behavior: smooth; }
@@ -29,7 +32,48 @@
     overflow-x: hidden;
   }
 
-  /* NAV */
+  /* ========== CANVAS (fire particles) ========== */
+  #fire-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ========== EQUALIZER CANVAS (hero) ========== */
+  #equalizer-canvas {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 180px;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.25;
+  }
+
+  /* ========== AMBIENT GLOW BG ========== */
+  .ambient-glow {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,61,0,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 80% 100%, rgba(255,179,0,0.04) 0%, transparent 50%),
+      radial-gradient(ellipse 40% 50% at 20% 60%, rgba(255,61,0,0.03) 0%, transparent 50%);
+    animation: ambientShift 12s ease-in-out infinite alternate;
+  }
+
+  @keyframes ambientShift {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+  }
+
+  /* ========== NAV ========== */
   nav {
     position: fixed;
     top: 0; left: 0; right: 0;
@@ -39,6 +83,8 @@
     align-items: center;
     padding: 1.2rem 3rem;
     background: linear-gradient(to bottom, rgba(8,8,8,0.95), transparent);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
   }
 
   .nav-logo {
@@ -47,7 +93,9 @@
     letter-spacing: 0.15em;
     color: var(--fire);
     text-decoration: none;
+    transition: text-shadow 0.3s;
   }
+  .nav-logo:hover { text-shadow: 0 0 15px rgba(255,61,0,0.6); }
 
   .nav-links { display: flex; gap: 2.5rem; list-style: none; }
 
@@ -59,11 +107,21 @@
     color: var(--muted);
     text-decoration: none;
     transition: color 0.2s;
+    position: relative;
   }
-
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--fire);
+    transition: width 0.3s;
+  }
   .nav-links a:hover { color: var(--fire); }
+  .nav-links a:hover::after { width: 100%; }
 
-  /* HERO */
+  /* ========== HERO ========== */
   .hero {
     position: relative;
     height: 100vh;
@@ -72,14 +130,15 @@
     justify-content: flex-end;
     padding: 0 3rem 5rem;
     overflow: hidden;
+    z-index: 1;
   }
 
   .hero-bg {
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse 60% 50% at 70% 60%, rgba(255,61,0,0.18) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 60% at 30% 80%, rgba(255,109,0,0.1) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 70% 60%, rgba(255,61,0,0.25) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 30% 80%, rgba(255,109,0,0.12) 0%, transparent 60%),
       #080808;
   }
 
@@ -98,10 +157,17 @@
                         linear-gradient(to right, transparent 0%, black 10%);
     mask-composite: intersect;
     -webkit-mask-composite: source-in;
+    animation: heroImgFloat 6s ease-in-out infinite alternate;
   }
 
+  @keyframes heroImgFloat {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-12px); }
+  }
+
+  .hero-content { position: relative; z-index: 2; }
+
   .hero-eyebrow {
-    position: relative;
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 0.8rem;
     letter-spacing: 0.35em;
@@ -112,34 +178,39 @@
     align-items: center;
     gap: 1rem;
   }
-
   .hero-eyebrow::before {
     content: '';
     display: block;
     width: 40px;
     height: 1px;
     background: var(--fire);
+    box-shadow: 0 0 8px rgba(255,61,0,0.6);
   }
 
   .hero-title {
-    position: relative;
     font-family: 'Bebas Neue', sans-serif;
     font-size: clamp(6rem, 14vw, 12rem);
     line-height: 0.88;
     letter-spacing: 0.02em;
     color: #fff;
     max-width: 55%;
+    text-shadow: 0 0 30px rgba(255,61,0,0.15);
   }
 
-  .hero-title span {
+  .hero-title .glow-text {
     display: block;
     color: var(--fire);
     font-size: clamp(3rem, 6vw, 5rem);
     letter-spacing: 0.25em;
+    animation: neonPulse 3s ease-in-out infinite;
+  }
+
+  @keyframes neonPulse {
+    0%, 100% { text-shadow: 0 0 10px rgba(255,61,0,0.4), 0 0 30px rgba(255,61,0,0.2); }
+    50% { text-shadow: 0 0 20px rgba(255,61,0,0.8), 0 0 60px rgba(255,61,0,0.4), 0 0 100px rgba(255,61,0,0.2); }
   }
 
   .hero-sub {
-    position: relative;
     margin-top: 1.5rem;
     font-size: 1rem;
     color: var(--muted);
@@ -149,7 +220,6 @@
   }
 
   .hero-cta {
-    position: relative;
     margin-top: 2.5rem;
     display: flex;
     gap: 1rem;
@@ -166,17 +236,22 @@
     border: 1px solid;
     transition: all 0.25s;
     display: inline-block;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
   }
 
   .btn-primary {
     background: var(--fire);
     border-color: var(--fire);
     color: #fff;
+    box-shadow: 0 0 15px rgba(255,61,0,0.2);
   }
-
   .btn-primary:hover {
     background: var(--ember);
     border-color: var(--ember);
+    box-shadow: 0 0 25px rgba(255,61,0,0.5);
+    transform: translateY(-2px);
   }
 
   .btn-outline {
@@ -184,10 +259,11 @@
     border-color: rgba(255,255,255,0.25);
     color: var(--text);
   }
-
   .btn-outline:hover {
     border-color: var(--fire);
     color: var(--fire);
+    box-shadow: 0 0 20px rgba(255,61,0,0.3);
+    transform: translateY(-2px);
   }
 
   .scroll-line {
@@ -203,21 +279,46 @@
     text-transform: uppercase;
     color: var(--muted);
     writing-mode: vertical-rl;
+    animation: scrollBounce 2s ease-in-out infinite;
+    z-index: 2;
   }
 
-  /* DIVIDER */
+  @keyframes scrollBounce {
+    0%, 100% { transform: translateY(0); opacity: 0.6; }
+    50% { transform: translateY(8px); opacity: 1; }
+  }
+
+  /* ========== TYPEWRITER CURSOR ========== */
+  .typewriter-cursor {
+    display: inline-block;
+    width: 3px;
+    height: 0.9em;
+    background: var(--fire);
+    margin-left: 4px;
+    animation: blink 0.8s step-end infinite;
+    vertical-align: baseline;
+  }
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  /* ========== DIVIDER ========== */
   .divider {
     height: 1px;
     background: linear-gradient(to right, transparent, var(--fire), transparent);
     margin: 0 3rem;
     opacity: 0.4;
+    position: relative;
+    z-index: 1;
   }
 
-  /* SECTION BASE */
+  /* ========== SECTION BASE ========== */
   section {
     padding: 6rem 3rem;
     max-width: 1200px;
     margin: 0 auto;
+    position: relative;
+    z-index: 1;
   }
 
   .section-label {
@@ -231,13 +332,13 @@
     align-items: center;
     gap: 1rem;
   }
-
   .section-label::before {
     content: '';
     display: block;
     width: 30px;
     height: 1px;
     background: var(--fire);
+    box-shadow: 0 0 6px rgba(255,61,0,0.5);
   }
 
   .section-title {
@@ -249,7 +350,22 @@
     margin-bottom: 2rem;
   }
 
-  /* ABOUT */
+  /* ========== REVEAL ANIMATIONS ========== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* ========== ABOUT ========== */
   .about-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -264,7 +380,6 @@
     color: #bbb;
     margin-bottom: 1.5rem;
   }
-
   .about-text strong {
     color: var(--fire);
     font-weight: 600;
@@ -285,6 +400,24 @@
     padding: 0.45rem 1rem;
     border: 1px solid rgba(255,61,0,0.4);
     color: var(--fire);
+    transition: all 0.3s;
+    cursor: default;
+    animation: tagFloat 3s ease-in-out infinite;
+  }
+  .genre-tag:nth-child(2) { animation-delay: 0.5s; }
+  .genre-tag:nth-child(3) { animation-delay: 1s; }
+  .genre-tag:nth-child(4) { animation-delay: 1.5s; }
+  .genre-tag:nth-child(5) { animation-delay: 0.3s; }
+  .genre-tag:nth-child(6) { animation-delay: 0.8s; }
+  .genre-tag:hover {
+    background: rgba(255,61,0,0.15);
+    box-shadow: 0 0 15px rgba(255,61,0,0.3);
+    transform: translateY(-2px);
+  }
+
+  @keyframes tagFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
   }
 
   .about-stats {
@@ -294,13 +427,15 @@
   }
 
   .stat-box {
-    background: var(--dark2);
-    border: 1px solid rgba(255,255,255,0.06);
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
     padding: 2rem 1.5rem;
     position: relative;
     overflow: hidden;
+    transition: all 0.3s;
   }
-
   .stat-box::before {
     content: '';
     position: absolute;
@@ -308,6 +443,19 @@
     width: 3px;
     height: 100%;
     background: var(--fire);
+    box-shadow: 0 0 10px rgba(255,61,0,0.6);
+  }
+  .stat-box::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,61,0,0.05) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .stat-box:hover {
+    border-color: rgba(255,61,0,0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(255,61,0,0.15);
   }
 
   .stat-number {
@@ -315,39 +463,79 @@
     font-size: 3.5rem;
     color: #fff;
     line-height: 1;
+    position: relative;
   }
-
   .stat-label {
     font-size: 0.8rem;
     color: var(--muted);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     margin-top: 0.4rem;
+    position: relative;
   }
 
-  /* EVENTS */
+  /* ========== EVENTS ========== */
   #events { background: var(--dark2); max-width: 100%; padding: 6rem 0; }
-  #events > .inner { max-width: 1200px; margin: 0 auto; padding: 0 3rem; }
+  #events > .inner { max-width: 1200px; margin: 0 auto; padding: 0 3rem; position: relative; z-index: 1; }
+
+  /* Countdown banner */
+  .countdown-bar {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.2rem 2rem;
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,61,0,0.25);
+    margin-top: 1.5rem;
+    margin-bottom: 3rem;
+    max-width: 700px;
+    box-shadow: 0 0 20px rgba(255,61,0,0.08);
+  }
+  .countdown-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--fire);
+    flex-shrink: 0;
+  }
+  .countdown-display {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 0.08em;
+    color: #fff;
+  }
+  .countdown-display span { color: var(--fire); }
 
   .events-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 1.5px;
-    margin-top: 3rem;
-    border: 1.5px solid rgba(255,255,255,0.06);
+    gap: 1.5rem;
+    margin-top: 1rem;
   }
 
   .event-card {
-    background: var(--dark);
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
     padding: 2.5rem 2rem;
     position: relative;
     overflow: hidden;
-    transition: background 0.3s;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     text-decoration: none;
     display: block;
     color: inherit;
   }
-
+  .event-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,61,0,0.03) 0%, transparent 50%);
+    pointer-events: none;
+  }
   .event-card::after {
     content: '';
     position: absolute;
@@ -356,21 +544,27 @@
     background: var(--fire);
     transform: scaleX(0);
     transform-origin: left;
-    transition: transform 0.35s ease;
+    transition: transform 0.4s ease;
+    box-shadow: 0 0 10px rgba(255,61,0,0.5);
   }
-
-  .event-card:hover { background: var(--dark3); }
+  .event-card:hover {
+    border-color: rgba(255,61,0,0.3);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(255,61,0,0.15);
+  }
   .event-card:hover::after { transform: scaleX(1); }
 
   .event-day {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 4rem;
-    color: rgba(255,61,0,0.15);
+    color: rgba(255,61,0,0.12);
     line-height: 1;
     position: absolute;
     top: 1rem; right: 1.5rem;
     letter-spacing: 0.02em;
+    transition: color 0.3s;
   }
+  .event-card:hover .event-day { color: rgba(255,61,0,0.25); }
 
   .event-name {
     font-family: 'Bebas Neue', sans-serif;
@@ -387,7 +581,6 @@
     flex-direction: column;
     gap: 0.4rem;
   }
-
   .event-meta span {
     font-size: 0.8rem;
     color: var(--muted);
@@ -396,7 +589,6 @@
     align-items: center;
     gap: 0.5rem;
   }
-
   .event-meta span::before {
     content: '—';
     color: var(--fire);
@@ -414,16 +606,18 @@
     text-decoration: none;
     border-bottom: 1px solid rgba(255,61,0,0.3);
     padding-bottom: 2px;
-    transition: border-color 0.2s;
+    transition: all 0.2s;
+  }
+  .event-tp:hover { 
+    border-color: var(--fire);
+    text-shadow: 0 0 8px rgba(255,61,0,0.5);
   }
 
-  .event-tp:hover { border-color: var(--fire); }
-
-  /* LINKS */
+  /* ========== LINKS ========== */
   .links-grid {
     display: flex;
     flex-direction: column;
-    gap: 1px;
+    gap: 0.8rem;
     margin-top: 3rem;
     max-width: 700px;
   }
@@ -433,18 +627,19 @@
     align-items: center;
     justify-content: space-between;
     padding: 1.5rem 2rem;
-    background: var(--dark2);
-    border: 1px solid rgba(255,255,255,0.05);
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
     text-decoration: none;
     color: inherit;
-    transition: all 0.25s;
-    group: true;
+    transition: all 0.3s;
   }
-
   .link-row:hover {
-    background: var(--dark3);
     border-color: rgba(255,61,0,0.3);
     padding-left: 2.5rem;
+    transform: translateX(4px);
+    box-shadow: 0 4px 20px rgba(255,61,0,0.1);
   }
 
   .link-platform {
@@ -454,7 +649,6 @@
     text-transform: uppercase;
     color: var(--muted);
   }
-
   .link-name {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 1.4rem;
@@ -463,7 +657,6 @@
     margin-top: 0.1rem;
     transition: color 0.25s;
   }
-
   .link-row:hover .link-name { color: var(--fire); }
 
   .link-arrow {
@@ -471,23 +664,27 @@
     color: var(--muted);
     transition: all 0.25s;
   }
-
   .link-row:hover .link-arrow {
     color: var(--fire);
     transform: translateX(4px);
   }
 
-  /* CONTACT */
+  /* ========== CONTACT ========== */
   .contact-wrap {
-    background: var(--dark2);
-    border: 1px solid rgba(255,255,255,0.06);
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
     padding: 3.5rem;
     margin-top: 3rem;
     max-width: 700px;
     position: relative;
     overflow: hidden;
+    transition: border-color 0.3s;
   }
-
+  .contact-wrap:hover {
+    border-color: rgba(255,61,0,0.2);
+  }
   .contact-wrap::before {
     content: 'BOOK';
     position: absolute;
@@ -500,26 +697,22 @@
     letter-spacing: 0.05em;
     pointer-events: none;
   }
-
   .contact-wrap p {
     font-size: 1rem;
     color: #999;
     line-height: 1.7;
     margin-bottom: 2rem;
   }
-
   .contact-detail {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-
   .contact-item {
     display: flex;
     align-items: center;
     gap: 1.2rem;
   }
-
   .contact-label {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 0.7rem;
@@ -528,22 +721,39 @@
     color: var(--fire);
     min-width: 80px;
   }
-
   .contact-value {
     font-size: 0.95rem;
     color: var(--text);
   }
-
   .contact-value a {
     color: inherit;
     text-decoration: none;
     border-bottom: 1px solid rgba(255,255,255,0.15);
     transition: border-color 0.2s, color 0.2s;
   }
-
   .contact-value a:hover {
     color: var(--fire);
     border-color: var(--fire);
+  }
+
+  /* ========== NOW PLAYING ========== */
+  .nowplaying-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 99;
+  }
+
+  .nowplaying-bar {
+    background: rgba(14,14,14,0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(255,61,0,0.3);
+    padding: 0.8rem 3rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
   }
 
   .np-play {
@@ -557,25 +767,13 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    transition: background 0.2s, transform 0.1s;
+    transition: all 0.2s;
+    box-shadow: 0 0 10px rgba(255,61,0,0.3);
   }
-
-  .np-play:hover { background: var(--ember); transform: scale(1.08); }
+  .np-play:hover { background: var(--ember); transform: scale(1.08); box-shadow: 0 0 20px rgba(255,61,0,0.5); }
   .np-play:active { transform: scale(0.95); }
-
   .np-play svg { width: 14px; height: 14px; fill: #fff; margin-left: 2px; }
   .np-play.playing svg { margin-left: 0; }
-
-  /* NOW PLAYING */
-  .nowplaying-bar {
-    background: var(--dark2);
-    border-top: 1px solid rgba(255,61,0,0.3);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    padding: 1rem 3rem;
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-  }
 
   .np-indicator {
     display: flex;
@@ -583,16 +781,15 @@
     gap: 0.6rem;
     flex-shrink: 0;
   }
-
   .np-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
     background: var(--fire);
     animation: pulse 1.5s ease-in-out infinite;
+    box-shadow: 0 0 8px rgba(255,61,0,0.8);
   }
-
-  .np-dot.offline { background: var(--muted); animation: none; }
+  .np-dot.offline { background: var(--muted); box-shadow: none; animation: none; }
 
   @keyframes pulse {
     0%, 100% { opacity: 1; transform: scale(1); }
@@ -606,7 +803,6 @@
     text-transform: uppercase;
     color: var(--fire);
   }
-
   .np-label.offline { color: var(--muted); }
 
   .np-track {
@@ -625,10 +821,36 @@
     color: var(--muted);
     flex-shrink: 0;
   }
-
   .np-listeners span { color: var(--fire); font-weight: 600; }
 
-  /* FOOTER */
+  /* Mini equalizer next to live dot */
+  .np-eq {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+  .np-eq .eq-bar {
+    width: 3px;
+    background: var(--fire);
+    border-radius: 1px;
+    animation: eqAnim 0.8s ease-in-out infinite alternate;
+  }
+  .np-eq .eq-bar:nth-child(1) { height: 60%; animation-delay: 0s; }
+  .np-eq .eq-bar:nth-child(2) { height: 100%; animation-delay: 0.2s; }
+  .np-eq .eq-bar:nth-child(3) { height: 40%; animation-delay: 0.4s; }
+  .np-eq .eq-bar:nth-child(4) { height: 80%; animation-delay: 0.1s; }
+  .np-eq .eq-bar:nth-child(5) { height: 50%; animation-delay: 0.3s; }
+
+  .np-eq.offline { opacity: 0.15; }
+
+  @keyframes eqAnim {
+    0% { height: 20%; opacity: 0.5; }
+    100% { height: var(--eq-h, 100%); opacity: 1; }
+  }
+
+  /* ========== FOOTER ========== */
   footer {
     border-top: 1px solid rgba(255,255,255,0.06);
     padding: 2.5rem 3rem;
@@ -636,47 +858,51 @@
     justify-content: space-between;
     align-items: center;
     max-width: 100%;
+    position: relative;
+    z-index: 1;
+    padding-bottom: 5rem;
   }
-
   .footer-logo {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 1.4rem;
     letter-spacing: 0.15em;
     color: var(--fire);
   }
-
   .footer-copy {
     font-size: 0.8rem;
     color: var(--muted);
     letter-spacing: 0.05em;
   }
 
-  /* ANIMATIONS */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .hero-eyebrow { animation: fadeUp 0.8s ease both; }
-  .hero-title { animation: fadeUp 0.8s 0.15s ease both; }
-  .hero-sub { animation: fadeUp 0.8s 0.3s ease both; }
-  .hero-cta { animation: fadeUp 0.8s 0.45s ease both; }
-
-  /* RESPONSIVE */
+  /* ========== RESPONSIVE ========== */
   @media (max-width: 768px) {
     nav { padding: 1rem 1.5rem; }
     .nav-links { display: none; }
     .hero { padding: 0 1.5rem 4rem; }
     .hero-title { font-size: 5rem; max-width: 100%; }
-    .hero-img { opacity: 0.3; right: 0; }
+    .hero-img { opacity: 0.25; right: -20%; }
+    .scroll-line { display: none; }
     section { padding: 4rem 1.5rem; }
     .about-grid { grid-template-columns: 1fr; gap: 3rem; }
     #events > .inner { padding: 0 1.5rem; }
-    footer { flex-direction: column; gap: 1rem; padding: 2rem 1.5rem; }
+    .countdown-bar { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+    footer { flex-direction: column; gap: 1rem; padding: 2rem 1.5rem; padding-bottom: 5rem; }
+    .nowplaying-bar { padding: 0.8rem 1rem; gap: 0.8rem; }
+    .np-eq { display: none; }
+    .contact-wrap::before { font-size: 5rem; }
   }
 </style>
 </head>
 <body>
+
+<!-- FIRE PARTICLE CANVAS -->
+<canvas id="fire-canvas"></canvas>
+
+<!-- AMBIENT GLOW -->
+<div class="ambient-glow"></div>
+
+<!-- EQUALIZER CANVAS (hero) -->
+<canvas id="equalizer-canvas"></canvas>
 
 <!-- NAV -->
 <nav>
@@ -698,15 +924,17 @@
     alt="DJ Rave"
     onerror="this.style.display='none'"
   >
-  <p class="hero-eyebrow">Second Life's Resident Inferno</p>
-  <h1 class="hero-title">
-    DJ<br>RAVE
-    <span>Live Mix</span>
-  </h1>
-  <p class="hero-sub">From the underground pulse of house to the hypnotic waves of trance and the high-octane flair of pop — this isn't just music. It's an immersive journey.</p>
-  <div class="hero-cta">
-    <a href="#events" class="btn btn-primary">Upcoming Events</a>
-    <a href="#contact" class="btn btn-outline">Book DJ Rave</a>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Second Life's Resident Inferno</p>
+    <h1 class="hero-title">
+      DJ<br>RAVE
+      <span class="glow-text">Live Mix</span>
+    </h1>
+    <p class="hero-sub">From the underground pulse of house to the hypnotic waves of trance and the high-octane flair of pop — this isn't just music. It's an immersive journey.</p>
+    <div class="hero-cta">
+      <a href="#events" class="btn btn-primary">Upcoming Events</a>
+      <a href="#contact" class="btn btn-outline">Book DJ Rave</a>
+    </div>
   </div>
   <div class="scroll-line">Scroll</div>
 </div>
@@ -715,10 +943,10 @@
 
 <!-- ABOUT -->
 <section id="about">
-  <p class="section-label">About</p>
-  <h2 class="section-title">Master of the<br>Dance Floor</h2>
+  <p class="section-label reveal">About</p>
+  <h2 class="section-title reveal reveal-delay-1">Master of the<br>Dance Floor</h2>
   <div class="about-grid">
-    <div class="about-text">
+    <div class="about-text reveal reveal-delay-2">
       <p>DJ Rave is a <strong>master craftsman of the dance floor</strong>. His performances are more than just music — they're an experience that pulls you in and never lets go.</p>
       <p>Whether spinning hypnotic deep house, soaring trance, or crowd-erupting pop anthems, every set is a hand-crafted journey. No two nights are alike. No crowd goes home the same.</p>
       <p>Resident DJ at Inferno and a familiar force across the Second Life grid, DJ Rave brings <strong>unmatched energy</strong> to every booth he steps into.</p>
@@ -731,9 +959,9 @@
         <span class="genre-tag">Jackin' House</span>
       </div>
     </div>
-    <div class="about-stats">
+    <div class="about-stats reveal reveal-delay-3">
       <div class="stat-box">
-        <div class="stat-number">4</div>
+        <div class="stat-number" data-count="4">0</div>
         <div class="stat-label">Weekly Residencies</div>
       </div>
       <div class="stat-box">
@@ -741,7 +969,7 @@
         <div class="stat-label">Always Mixed Live</div>
       </div>
       <div class="stat-box">
-        <div class="stat-number">3+</div>
+        <div class="stat-number" data-count="3">0</div>
         <div class="stat-label">Venues on the Grid</div>
       </div>
       <div class="stat-box">
@@ -757,8 +985,15 @@
 <!-- EVENTS -->
 <div id="events">
   <div class="inner">
-    <p class="section-label">On the Grid</p>
-    <h2 class="section-title">Upcoming Events</h2>
+    <p class="section-label reveal">On the Grid</p>
+    <h2 class="section-title reveal reveal-delay-1">Upcoming Events</h2>
+
+    <!-- Countdown -->
+    <div class="countdown-bar reveal reveal-delay-2">
+      <span class="countdown-label">Next Show In</span>
+      <div class="countdown-display" id="countdown-display">--d --h --m --s</div>
+    </div>
+
     <div class="events-grid" id="events-grid"></div>
   </div>
 </div>
@@ -767,9 +1002,9 @@
 
 <!-- LINKS -->
 <section id="links">
-  <p class="section-label">Find Me</p>
-  <h2 class="section-title">Links</h2>
-  <div class="links-grid">
+  <p class="section-label reveal">Find Me</p>
+  <h2 class="section-title reveal reveal-delay-1">Links</h2>
+  <div class="links-grid reveal reveal-delay-2">
 
     <a class="link-row" href="https://www.primfeed.com/rave.wilder" target="_blank">
       <div>
@@ -810,9 +1045,9 @@
 
 <!-- CONTACT -->
 <section id="contact">
-  <p class="section-label">Bookings</p>
-  <h2 class="section-title">Book DJ Rave</h2>
-  <div class="contact-wrap">
+  <p class="section-label reveal">Bookings</p>
+  <h2 class="section-title reveal reveal-delay-1">Book DJ Rave</h2>
+  <div class="contact-wrap reveal reveal-delay-2">
     <p>Want DJ Rave at your venue, event, or club night? Reach out in-world or through the group. All genres covered — from deep underground house to full-send EDM.</p>
     <div class="contact-detail">
       <div class="contact-item">
@@ -831,17 +1066,26 @@
   </div>
 </section>
 
-<!-- NOW PLAYING BAR -->
-<div class="nowplaying-bar" id="np-bar">
-  <button class="np-play" id="np-play" aria-label="Play stream">
-    <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
-  </button>
-  <div class="np-indicator">
-    <div class="np-dot" id="np-dot"></div>
-    <div class="np-label" id="np-label">Live Now</div>
+<!-- NOW PLAYING BAR (fixed bottom) -->
+<div class="nowplaying-container">
+  <div class="nowplaying-bar" id="np-bar">
+    <button class="np-play" id="np-play" aria-label="Play stream">
+      <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+    </button>
+    <div class="np-indicator">
+      <div class="np-dot" id="np-dot"></div>
+      <div class="np-label" id="np-label">Live Now</div>
+    </div>
+    <div class="np-eq" id="np-eq">
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+    </div>
+    <div class="np-track" id="np-track">Connecting to stream...</div>
+    <div class="np-listeners" id="np-listeners"></div>
   </div>
-  <div class="np-track" id="np-track">Connecting to stream...</div>
-  <div class="np-listeners" id="np-listeners"></div>
 </div>
 <audio id="np-audio" preload="none"></audio>
 
@@ -852,6 +1096,184 @@
 </footer>
 
 <script>
+// ============================================================
+// 1. FIRE PARTICLE CANVAS
+// ============================================================
+(function() {
+  const canvas = document.getElementById('fire-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H;
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const particles = [];
+  const MAX = 60;
+
+  function createParticle() {
+    return {
+      x: Math.random() * W,
+      y: H + 20,
+      size: Math.random() * 3 + 1.5,
+      speedY: -(Math.random() * 0.6 + 0.2),
+      speedX: (Math.random() - 0.5) * 0.4,
+      opacity: Math.random() * 0.5 + 0.2,
+      hue: Math.random() * 30 + 10, // 10-40: orange-red range
+      life: Math.random() * 0.5 + 0.3,
+      maxLife: Math.random() * 0.5 + 0.3,
+      drift: Math.sin(Math.random() * Math.PI * 2) * 0.3
+    };
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+
+    if (particles.length < MAX && Math.random() < 0.3) {
+      particles.push(createParticle());
+    }
+
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.x += p.speedX + Math.sin(p.life * 10 + p.drift) * 0.3;
+      p.y += p.speedY;
+      p.life -= 0.005;
+      p.opacity = Math.max(0, p.opacity - 0.002);
+
+      if (p.life <= 0 || p.y < -20 || p.opacity <= 0) {
+        particles.splice(i, 1);
+        continue;
+      }
+
+      const alpha = p.opacity * Math.min(1, p.life / 0.1);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 2);
+      gradient.addColorStop(0, `rgba(255, ${Math.floor(100 + p.hue * 3)}, 0, ${alpha})`);
+      gradient.addColorStop(0.5, `rgba(255, ${Math.floor(60 + p.hue * 2)}, 0, ${alpha * 0.4})`);
+      gradient.addColorStop(1, `rgba(255, 60, 0, 0)`);
+      ctx.fillStyle = gradient;
+      ctx.fill();
+    }
+
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+
+// ============================================================
+// 2. EQUALIZER CANVAS (hero background visualizer)
+// ============================================================
+(function() {
+  const canvas = document.getElementById('equalizer-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H;
+  function resize() {
+    const hero = document.querySelector('.hero');
+    if (!hero) return;
+    const rect = hero.getBoundingClientRect();
+    canvas.style.top = (rect.height - 180) + 'px';
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = 180;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const bars = 48;
+  const heights = new Float32Array(bars);
+  const targets = new Float32Array(bars);
+
+  function randomizeTargets() {
+    for (let i = 0; i < bars; i++) {
+      targets[i] = Math.random() * 0.8 + 0.1;
+    }
+  }
+  randomizeTargets();
+  setInterval(randomizeTargets, 800);
+
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+    const barW = W / bars;
+    const gap = barW * 0.15;
+
+    for (let i = 0; i < bars; i++) {
+      heights[i] += (targets[i] - heights[i]) * 0.08;
+
+      const x = i * barW + gap / 2;
+      const w = barW - gap;
+      const h = heights[i] * H * 0.7;
+      const y = H - h;
+
+      const hue = 15 + (i / bars) * 20;
+      const gradient = ctx.createLinearGradient(0, y, 0, H);
+      gradient.addColorStop(0, `hsla(${hue}, 100%, 55%, 0.35)`);
+      gradient.addColorStop(0.5, `hsla(${hue + 5}, 100%, 45%, 0.15)`);
+      gradient.addColorStop(1, `hsla(${hue + 10}, 100%, 35%, 0)`);
+      ctx.fillStyle = gradient;
+      
+      ctx.beginPath();
+      ctx.roundRect(x, y, w, h, [w/2, w/2, 0, 0]);
+      ctx.fill();
+    }
+
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+
+// ============================================================
+// 3. REVEAL ANIMATIONS (Intersection Observer)
+// ============================================================
+(function() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal').forEach(el => {
+    observer.observe(el);
+  });
+})();
+
+// ============================================================
+// 4. STAT COUNTER ANIMATION
+// ============================================================
+(function() {
+  const statNumbers = document.querySelectorAll('.stat-number[data-count]');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const target = parseInt(el.dataset.count);
+        let current = 0;
+        const step = Math.ceil(target / 30);
+        const interval = setInterval(() => {
+          current += step;
+          if (current >= target) {
+            current = target;
+            clearInterval(interval);
+          }
+          el.textContent = current;
+        }, 40);
+        observer.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  statNumbers.forEach(el => observer.observe(el));
+})();
+
+// ============================================================
+// 5. EVENTS (dynamic dates + countdown)
+// ============================================================
+(function() {
   function nextWeekday(dayOfWeek) {
     const today = new Date();
     today.setHours(0,0,0,0);
@@ -917,7 +1339,7 @@
 
   const grid = document.getElementById('events-grid');
   grid.innerHTML = events.map(e => `
-    <div class="event-card">
+    <div class="event-card reveal">
       <div class="event-day">${dayLabel(e.date)}</div>
       <div class="event-name">${e.name}</div>
       <div class="event-meta">
@@ -929,8 +1351,42 @@
     </div>
   `).join('');
 
-</script>
-<script>
+  // Re-observe new event cards
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('#events-grid .event-card.reveal').forEach(el => obs.observe(el));
+
+  // === COUNTDOWN ===
+  const countdownEl = document.getElementById('countdown-display');
+  function updateCountdown() {
+    const nextEvent = events[0];
+    if (!nextEvent) return;
+    const now = new Date();
+    const diff = nextEvent.date - now;
+    if (diff <= 0) {
+      countdownEl.innerHTML = '<span>NOW PLAYING</span>';
+      return;
+    }
+    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const s = Math.floor((diff % (1000 * 60)) / 1000);
+    countdownEl.innerHTML = `${d}d <span>${h}h</span> <span>${m}m</span> <span>${s}s</span>`;
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+})();
+
+// ============================================================
+// 6. STREAM PLAYER + NOW PLAYING
+// ============================================================
+(function() {
   const STREAM_URL = 'https://stream.rsigalaxy.com/stream';
   const STATS_URL = 'https://stream.rsigalaxy.com/status-json.xsl';
   const audio = document.getElementById('np-audio');
@@ -953,10 +1409,13 @@
       playing = false;
     }
   });
+
   const npDot = document.getElementById('np-dot');
   const npLabel = document.getElementById('np-label');
   const npTrack = document.getElementById('np-track');
   const npListeners = document.getElementById('np-listeners');
+  const npEq = document.getElementById('np-eq');
+
   function setOffAir() {
     npDot.classList.add('offline');
     npLabel.classList.add('offline');
@@ -964,6 +1423,7 @@
     npTrack.textContent = 'DJ Rave is not currently streaming';
     npTrack.style.color = 'var(--muted)';
     npListeners.textContent = '';
+    npEq.classList.add('offline');
   }
   function setLive(track, listeners) {
     npDot.classList.remove('offline');
@@ -972,6 +1432,7 @@
     npTrack.textContent = track || 'DJ Rave — Live Mix';
     npTrack.style.color = 'var(--text)';
     npListeners.innerHTML = listeners ? `<span>${listeners}</span> listeners` : '';
+    npEq.classList.remove('offline');
   }
   async function fetchNowPlaying() {
     try {
@@ -979,7 +1440,6 @@
       const data = await res.json();
       const source = data?.icestats?.source;
       if (!source) { setOffAir(); return; }
-      // source can be an array (multiple mounts) or a single object
       const mount = Array.isArray(source)
         ? source.find(s => s.listenurl?.endsWith('/stream')) || source[0]
         : source;
@@ -996,6 +1456,7 @@
   }
   fetchNowPlaying();
   setInterval(fetchNowPlaying, 15000);
+})();
 </script>
 </body>
 </html>
