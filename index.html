@@ -569,12 +569,13 @@
       padding: 0.7rem 2rem;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 1.25rem;
     }
     .player-left {
       display: flex;
       align-items: center;
       gap: 1rem;
+      flex: 1;
     }
     .player-dot {
       width: 8px; height: 8px;
@@ -847,6 +848,9 @@
 
   <!-- ═══ STREAM PLAYER BAR ═══ -->
   <div class="player-bar" id="playerBar">
+    <button class="player-play" id="playerPlay" aria-label="Play stream">
+      <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+    </button>
     <div class="player-left">
       <div class="player-dot" id="playerDot"></div>
       <div>
@@ -855,9 +859,6 @@
       </div>
       <div class="player-listeners" id="playerListeners"></div>
     </div>
-    <button class="player-play" id="playerPlay" aria-label="Play stream">
-      <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
-    </button>
   </div>
 
   <audio id="playerAudio" preload="none"></audio>
