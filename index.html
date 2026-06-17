@@ -363,82 +363,126 @@
       inset: 0;
     }
 
-    /* ── Events ── */
-    #events { background: #070707; padding: 6rem 3rem; }
-    #events > .inner { max-width: 1200px; margin: 0 auto; }
-    .events-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.5px;
-      margin-top: 3rem;
-      border: 1.5px solid rgba(255,255,255,0.06);
-    }
-    .event-card {
-      background: var(--card-bg);
-      padding: 2.5rem 2rem;
-      position: relative;
-      overflow: hidden;
-      transition: background 0.3s;
-    }
-    .event-card::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 2px;
-      background: var(--accent);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.35s ease;
-    }
-    .event-card:hover { background: var(--bg3); }
-    .event-card:hover::after { transform: scaleX(1); }
-    .event-day {
-      font-size: 3.5rem;
-      font-weight: 800;
-      color: rgba(255,13,81,0.12);
-      line-height: 1;
-      position: absolute;
-      top: 1rem; right: 1.5rem;
-    }
-    .event-name {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #fff;
-      line-height: 1.15;
-    }
-    .event-meta {
-      margin-top: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-    }
-    .event-meta span {
-      font-size: 0.78rem;
-      color: var(--muted);
-      letter-spacing: 0.5px;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .event-meta span::before {
-      content: '—';
-      color: var(--accent);
-      font-weight: 700;
-    }
-    .event-actions {
-      display: flex;
-      gap: 0.6rem;
-      margin-top: 1.5rem;
-    }
-    .event-actions .btn-flyer {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: transparent;
-    }
-    .event-actions .btn-flyer:hover {
-      background: var(--accent);
-      color: #fff;
-    }
+    /* ── Events Cards (flyer-backed) ── */
+        #events { background: #070707; padding: 6rem 3rem; }
+        #events > .inner { max-width: 1200px; margin: 0 auto; }
+        .events-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 1.5rem;
+          margin-top: 3rem;
+        }
+        .event-card {
+          position: relative;
+          border-radius: 4px;
+          overflow: hidden;
+          background: var(--card-bg);
+          border: 1px solid rgba(255,255,255,0.06);
+          transition: transform 0.3s ease, border-color 0.3s ease;
+          display: flex;
+          flex-direction: column;
+        }
+        .event-card:hover {
+          transform: translateY(-4px);
+          border-color: rgba(255,13,81,0.2);
+        }
+        .event-flyer-bg {
+                  position: relative;
+                  width: 100%;
+                  aspect-ratio: 1/1.4;
+                  overflow: hidden;
+                  background: #0a0a0a;
+                }
+        .event-flyer-bg img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.4s ease;
+        }
+        .event-card:hover .event-flyer-bg img {
+          transform: scale(1.05);
+        }
+        .event-flyer-bg::after {
+          content: '';
+          position: absolute;
+          bottom: 0; left: 0; right: 0;
+          height: 60%;
+          background: linear-gradient(180deg, transparent 0%, rgba(10,10,10,0.85) 100%);
+          pointer-events: none;
+        }
+        /* Day badge */
+        .event-day-badge {
+          position: absolute;
+          top: 0.75rem;
+          left: 0.75rem;
+          z-index: 2;
+          background: var(--accent);
+          color: #fff;
+          font-size: 0.65rem;
+          font-weight: 700;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          padding: 0.3rem 0.7rem;
+          border-radius: 3px;
+        }
+        /* Event info overlaid on bottom of image */
+        .event-overlay {
+          position: absolute;
+          bottom: 0; left: 0; right: 0;
+          z-index: 2;
+          padding: 1.5rem;
+        }
+        .event-overlay .event-name {
+          font-size: 1.2rem;
+          font-weight: 700;
+          color: #fff;
+          line-height: 1.2;
+          margin-bottom: 0.3rem;
+        }
+        .event-overlay .event-date {
+          font-size: 0.75rem;
+          color: rgba(255,255,255,0.6);
+          letter-spacing: 0.5px;
+        }
+        /* Card footer with venue + actions */
+        .event-footer {
+          padding: 1rem 1.5rem 1.25rem;
+          display: flex;
+          flex-direction: column;
+          gap: 0.8rem;
+        }
+        .event-venue {
+          font-size: 0.78rem;
+          color: var(--muted);
+          letter-spacing: 0.5px;
+          display: flex;
+          align-items: center;
+          gap: 0.4rem;
+        }
+        .event-venue::before {
+          content: '📍';
+          font-size: 0.7rem;
+        }
+        .event-actions {
+          display: flex;
+          gap: 0.5rem;
+        }
+        .event-actions .btn {
+          padding: 0.45rem 1rem;
+          font-size: 0.65rem;
+          border-width: 1px;
+          flex: 1;
+          text-align: center;
+        }
+        .event-actions .btn-flyer {
+          border-color: var(--accent);
+          color: var(--accent);
+          background: transparent;
+        }
+        .event-actions .btn-flyer:hover {
+          background: var(--accent);
+          color: #fff;
+        }
 
     /* ── Signature Events ── */
     #signature {
@@ -887,6 +931,7 @@
             #behind-booth { padding: 4rem 1.5rem; }
             .booth-grid { grid-template-columns: 1fr; gap: 2rem; }
       #events { padding: 4rem 1.5rem; }
+      .events-grid { gap: 1rem; }
       #links { padding: 4rem 1.5rem; }
       .links-grid { grid-template-columns: 1fr; }
       #contact { padding: 4rem 1.5rem; }
@@ -1315,20 +1360,24 @@
     // ── Render events ──
     const grid = document.getElementById('eventsGrid');
     grid.innerHTML = events.map(e => `
-      <div class="event-card">
-        <div class="event-day">${dayLabel(e.date)}</div>
-        <div class="event-name">${e.name}</div>
-        <div class="event-meta">
-          <span>${formatDate(e.date)}</span>
-          <span>${e.venue}</span>
-          <span>${e.genre}</span>
-        </div>
-        <div class="event-actions">
-          <a class="btn btn-sm btn-outline" href="${e.url}" target="_blank">Teleport ↗</a>
-          <button class="btn btn-sm btn-flyer" data-flyer="${e.flyer}">Flyer</button>
-        </div>
-      </div>
-    `).join('');
+          <div class="event-card">
+            <div class="event-flyer-bg">
+              <img src="${e.flyer}" alt="${e.name}" />
+              <div class="event-day-badge">${dayLabel(e.date)}</div>
+              <div class="event-overlay">
+                <div class="event-name">${e.name}</div>
+                <div class="event-date">${formatDate(e.date)}</div>
+              </div>
+            </div>
+            <div class="event-footer">
+              <div class="event-venue">${e.venue}</div>
+              <div class="event-actions">
+                <a class="btn btn-outline" href="${e.url}" target="_blank">Teleport ↗</a>
+                <button class="btn btn-flyer" data-flyer="${e.flyer}">Flyer</button>
+              </div>
+            </div>
+          </div>
+        `).join('');
 
     grid.querySelectorAll('.btn-flyer').forEach(btn => {
       btn.addEventListener('click', () => openFlyer(btn.dataset.flyer));
