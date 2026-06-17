@@ -648,28 +648,7 @@
     }
     footer p { font-size: 0.75rem; color: rgba(255,255,255,0.12); letter-spacing: 1px; }
 
-    /* ── Preview Banner ── */
-    .preview-banner {
-      position: fixed;
-      top: 76px; left: 50%;
-      transform: translateX(-50%);
-      background: var(--accent);
-      color: #fff;
-      padding: 6px 20px;
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      z-index: 999;
-      border-radius: 0 0 4px 4px;
-      animation: slideDown 0.5s ease;
-    }
-    @keyframes slideDown {
-      from { transform: translateX(-50%) translateY(-100%); }
-      to { transform: translateX(-50%) translateY(0); }
-    }
-
-    /* ── Divider ── */
+    
     .divider {
       height: 1px;
       background: rgba(255,255,255,0.04);
@@ -703,9 +682,6 @@
   </style>
 </head>
 <body>
-
-  <!-- ═══ PREVIEW BANNER ═══ -->
-  <div class="preview-banner">✦ Redesign Preview — Not Published ✦</div>
 
   <!-- ═══ FLYER MODAL ═══ -->
   <div class="flyer-overlay" id="flyerOverlay">
