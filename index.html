@@ -440,6 +440,72 @@
       color: #fff;
     }
 
+    /* ── Signature Events ── */
+    #signature {
+      padding: 6rem 3rem;
+      background: var(--bg);
+    }
+    #signature .inner {
+      max-width: 1060px;
+      margin: 0 auto;
+    }
+    .sig-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5px;
+      margin-top: 3rem;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .sig-card {
+      background: var(--card-bg);
+      padding: 3rem 2rem;
+      text-align: center;
+      position: relative;
+      transition: background 0.3s;
+    }
+    .sig-card:hover { background: var(--bg3); }
+    .sig-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.35s ease;
+    }
+    .sig-card:hover::after { transform: scaleX(1); }
+    .sig-logo {
+      width: 100%;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    .sig-logo img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      filter: brightness(0.9);
+      transition: filter 0.3s;
+    }
+    .sig-card:hover .sig-logo img { filter: brightness(1.1); }
+    .sig-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.5rem;
+      letter-spacing: 1px;
+    }
+    .sig-desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 240px;
+      margin: 0 auto;
+    }
+
     /* ── Flyer Modal ── */
     .flyer-overlay {
       position: fixed;
@@ -666,6 +732,9 @@
       #contact { padding: 4rem 1.5rem; }
       .contact-wrap { grid-template-columns: 1fr; gap: 2rem; }
       .container { padding: 0 1.5rem; }
+      #signature { padding: 4rem 1.5rem; }
+      .sig-grid { grid-template-columns: 1fr; }
+      .sig-logo { height: 90px; }
     }
   </style>
 </head>
@@ -775,6 +844,39 @@
   </div>
 
   <div class="divider" style="margin-top:0;"></div>
+
+  <!-- ═══ SIGNATURE EVENTS ═══ -->
+  <section id="signature">
+    <div class="inner">
+      <p class="section-label" style="text-align:center;">Signature Events</p>
+      <h2 class="section-heading" style="text-align:center;">Past Featured Events</h2>
+      <div class="sig-grid">
+        <div class="sig-card">
+          <div class="sig-logo">
+            <img src="./prideinspace.png" alt="Pride in Space" />
+          </div>
+          <div class="sig-name">Pride in Space</div>
+          <div class="sig-desc">A landmark celebration bringing pride to the grid</div>
+        </div>
+        <div class="sig-card">
+          <div class="sig-logo">
+            <img src="./relay4life.png" alt="Relay for Life" />
+          </div>
+          <div class="sig-name">Relay for Life</div>
+          <div class="sig-desc">Raising awareness and funds through the power of music</div>
+        </div>
+        <div class="sig-card">
+          <div class="sig-logo">
+            <img src="./secondpride.png" alt="Second Pride" />
+          </div>
+          <div class="sig-name">Second Pride</div>
+          <div class="sig-desc">Celebrating diversity and inclusion across Second Life</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
 
   <!-- ═══ LINKS ═══ -->
   <section id="links">
