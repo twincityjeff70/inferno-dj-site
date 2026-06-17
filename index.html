@@ -506,6 +506,52 @@
       margin: 0 auto;
     }
 
+    /* ── Samples / Mixcloud Embed ── */
+    #samples {
+      padding: 6rem 3rem;
+      background: #070707;
+    }
+    #samples .inner {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .samples-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      margin-top: 3rem;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .sample-card {
+      background: var(--card-bg);
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: background 0.25s;
+    }
+    .sample-card:hover { background: var(--bg3); }
+    .sample-player {
+      flex: 1;
+      min-width: 0;
+    }
+    .sample-player iframe {
+      display: block;
+      border-radius: 4px;
+    }
+    .sample-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 1px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .samples-cta {
+      text-align: center;
+      margin-top: 2.5rem;
+    }
+
     /* ── Flyer Modal ── */
     .flyer-overlay {
       position: fixed;
@@ -735,6 +781,9 @@
       #signature { padding: 4rem 1.5rem; }
       .sig-grid { grid-template-columns: 1fr; }
       .sig-logo { height: 90px; }
+      #samples { padding: 4rem 1.5rem; }
+      .sample-card { flex-direction: column; gap: 0.5rem; padding: 1rem; }
+      .sample-title { white-space: normal; }
     }
   </style>
 </head>
@@ -872,6 +921,45 @@
           <div class="sig-name">Second Pride</div>
           <div class="sig-desc">Celebrating diversity and inclusion across Second Life</div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══ SAMPLES ═══ -->
+  <section id="samples">
+    <div class="inner">
+      <p class="section-label" style="text-align:center;">Samples</p>
+      <h2 class="section-heading" style="text-align:center;">Latest Mixes</h2>
+      <div class="samples-grid">
+        <div class="sample-card">
+          <div class="sample-player">
+            <iframe width="100%" height="60" src="https://player-widget.mixcloud.com/widget/iframe/?hide_cover=1&mini=1&feed=%2Fdjravewilder%2Fdj-rave-live-inferno-volume-1%2F" frameborder="0" allow="encrypted-media; fullscreen; autoplay; idle-detection; speaker-selection; web-share;"></iframe>
+          </div>
+          <div class="sample-title">Inferno Volume 1</div>
+        </div>
+        <div class="sample-card">
+          <div class="sample-player">
+            <iframe width="100%" height="60" src="https://player-widget.mixcloud.com/widget/iframe/?hide_cover=1&mini=1&feed=%2Fdjravewilder%2Fdj-rave-live-inferno-volume-2%2F" frameborder="0" allow="encrypted-media; fullscreen; autoplay; idle-detection; speaker-selection; web-share;"></iframe>
+          </div>
+          <div class="sample-title">Inferno Volume 2</div>
+        </div>
+        <div class="sample-card">
+          <div class="sample-player">
+            <iframe width="100%" height="60" src="https://player-widget.mixcloud.com/widget/iframe/?hide_cover=1&mini=1&feed=%2Fdjravewilder%2Fpride-in-space-2026%2F" frameborder="0" allow="encrypted-media; fullscreen; autoplay; idle-detection; speaker-selection; web-share;"></iframe>
+          </div>
+          <div class="sample-title">Pride in Space 2026</div>
+        </div>
+        <div class="sample-card">
+          <div class="sample-player">
+            <iframe width="100%" height="60" src="https://player-widget.mixcloud.com/widget/iframe/?hide_cover=1&mini=1&feed=%2Fdjravewilder%2Frush-city-volume-2%2F" frameborder="0" allow="encrypted-media; fullscreen; autoplay; idle-detection; speaker-selection; web-share;"></iframe>
+          </div>
+          <div class="sample-title">Rush City Volume 2</div>
+        </div>
+      </div>
+      <div class="samples-cta">
+        <a href="https://www.mixcloud.com/djravewilder/" target="_blank" class="btn btn-primary">Full Mixcloud Profile →</a>
       </div>
     </div>
   </section>
