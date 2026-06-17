@@ -506,6 +506,118 @@
       margin: 0 auto;
     }
 
+    /* ── Behind the Booth ── */
+    #behind-booth {
+      padding: 6rem 3rem;
+      background: var(--bg);
+    }
+    #behind-booth .inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .booth-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      margin-top: 3rem;
+    }
+    .booth-image {
+      position: relative;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .booth-image img {
+      width: 100%;
+      display: block;
+    }
+    .booth-image::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 40%;
+      background: linear-gradient(180deg, transparent, rgba(10,10,10,0.6));
+      pointer-events: none;
+    }
+    .booth-text .section-label {
+      margin-bottom: 0.5rem;
+    }
+    .booth-text .section-heading {
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      margin-bottom: 1.5rem;
+    }
+    .booth-intro {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+    .gear-chain {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-bottom: 2rem;
+    }
+    .gear-link {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      background: var(--card-bg);
+      border-left: 2px solid var(--accent);
+      position: relative;
+    }
+    .gear-link + .gear-link {
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+    .gear-link:first-child {
+      border-radius: 4px 4px 0 0;
+    }
+    .gear-link:last-child {
+      border-radius: 0 0 4px 4px;
+    }
+    .gear-icon {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: rgba(255,13,81,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1rem;
+    }
+    .gear-info { flex: 1; }
+    .gear-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .gear-role {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-top: 1px;
+    }
+    .gear-arrow {
+      text-align: center;
+      font-size: 0.7rem;
+      color: rgba(255,13,81,0.3);
+      letter-spacing: 4px;
+      padding: 2px 0;
+    }
+    .booth-outro {
+              font-size: 1.3rem;
+              color: rgba(255,255,255,0.45);
+              font-style: italic;
+              line-height: 1.8;
+              text-align: center;
+              max-width: 750px;
+              margin: 2.5rem auto 0;
+            }
+
     /* ── Samples / Mixcloud Embed ── */
     #samples {
       padding: 6rem 3rem;
@@ -767,11 +879,13 @@
       .hero-name .line2 { font-size: clamp(2rem, 12vw, 3.5rem); letter-spacing: 10px; }
       .hero-eyebrow span { font-size: 0.5rem; letter-spacing: 3px; }
       .stats-wrap { padding: 0 1.5rem; margin-top: -2rem; }
-      .stats-bar { grid-template-columns: repeat(2, 1fr); }
-      .stat-item { padding: 1.5rem 1rem; }
-      .stat-number { font-size: 2.2rem; }
-      #about { padding: 4rem 1.5rem; }
-      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .stats-bar { grid-template-columns: repeat(2, 1fr); }
+            .stat-item { padding: 1.5rem 1rem; }
+            .stat-number { font-size: 2.2rem; }
+            #about { padding: 4rem 1.5rem; }
+            .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+            #behind-booth { padding: 4rem 1.5rem; }
+            .booth-grid { grid-template-columns: 1fr; gap: 2rem; }
       #events { padding: 4rem 1.5rem; }
       #links { padding: 4rem 1.5rem; }
       .links-grid { grid-template-columns: 1fr; }
@@ -883,7 +997,54 @@
     </div>
   </section>
 
-  <!-- ═══ EVENTS ═══ -->
+    <!-- ═══ BEHIND THE BOOTH ═══ -->
+    <section id="behind-booth">
+      <div class="inner">
+        <div class="booth-grid">
+          <div class="booth-image">
+            <img src="./Opus_quad.png" alt="Pioneer Opus Quad" />
+          </div>
+          <div class="booth-text">
+            <p class="section-label">Behind the Booth</p>
+            <h2 class="section-heading">The Gear Behind<br/>the Sound</h2>
+            <p class="booth-intro">
+              Every set starts with the music, but the sound chain matters. My rig is built for live mixing, clean transitions, powerful bass, clear vocals, and a reliable stream from my booth to your speakers.
+            </p>
+            <div class="gear-chain">
+              <div class="gear-link">
+                <div class="gear-icon">🎛️</div>
+                <div class="gear-info">
+                  <div class="gear-name">Pioneer Opus Quad</div>
+                  <div class="gear-role">Professional Standalone DJ System</div>
+                </div>
+              </div>
+              <div class="gear-arrow">▼</div>
+              <div class="gear-link">
+                <div class="gear-icon">🔊</div>
+                <div class="gear-info">
+                  <div class="gear-name">Focusrite Scarlett 2i2</div>
+                  <div class="gear-role">Audio Interface</div>
+                </div>
+              </div>
+              <div class="gear-arrow">▼</div>
+              <div class="gear-link">
+                <div class="gear-icon">📡</div>
+                <div class="gear-info">
+                  <div class="gear-name">Rocket Broadcaster Pro</div>
+                  <div class="gear-role">Stream Encoding &amp; Broadcast</div>
+                </div>
+              </div>
+            </div>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="booth-outro">
+                    "My goal is simple: music that feels alive, hits hard, and stays clean. The listener needs to feel like they are the experience."
+                  </p>
+                </div>
+              </section>
+
+    <!-- ═══ EVENTS ═══ -->
   <div id="events">
     <div class="inner">
       <p class="section-label">On the Grid</p>
