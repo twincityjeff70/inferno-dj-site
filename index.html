@@ -176,66 +176,53 @@
       display: inline-flex;
       align-items: center;
       gap: 1rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
     }
     .hero-eyebrow .line {
       display: block;
-      width: 30px; height: 1px;
+      width: 24px; height: 1px;
       background: var(--accent);
-      opacity: 0.5;
+      opacity: 0.3;
     }
     .hero-eyebrow span {
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       font-weight: 600;
       letter-spacing: 4px;
       text-transform: uppercase;
-      color: rgba(255,13,81,0.7);
+      color: rgba(255,13,81,0.5);
     }
 
-    /* "RAVE WILDER" — large fancy text */
+    /* "RAVE WILDER" — bold neon statement */
     .hero-name {
-      margin-bottom: 1.5rem;
+      margin-bottom: 0;
     }
     .hero-name .line1 {
       display: block;
-      font-size: clamp(4rem, 16vw, 12rem);
+      font-size: clamp(5rem, 18vw, 14rem);
       font-weight: 800;
-      line-height: 0.82;
-      letter-spacing: -4px;
+      line-height: 0.78;
+      letter-spacing: -6px;
       color: #fff;
+      position: relative;
       text-shadow:
-        0 0 30px rgba(255,13,81,0.4),
-        0 0 60px rgba(255,13,81,0.15),
-        0 0 100px rgba(255,13,81,0.08);
+        0 0 20px rgba(255,13,81,0.5),
+        0 0 50px rgba(255,13,81,0.2),
+        0 0 100px rgba(255,13,81,0.1),
+        0 0 160px rgba(255,13,81,0.05);
     }
     .hero-name .line2 {
       display: block;
-      font-size: clamp(2.5rem, 9vw, 7rem);
-      font-weight: 300;
+      font-size: clamp(2.5rem, 10vw, 7.5rem);
+      font-weight: 400;
       line-height: 1;
-      letter-spacing: 12px;
+      letter-spacing: 14px;
       color: var(--accent);
+      margin-top: -0.2em;
+      position: relative;
       text-shadow:
-        0 0 20px rgba(255,13,81,0.3),
-        0 0 40px rgba(255,13,81,0.1);
-      margin-top: -0.15em;
-    }
-
-    .hero-sub {
-      font-size: 0.85rem;
-      font-weight: 300;
-      color: rgba(255,255,255,0.4);
-      letter-spacing: 2px;
-      max-width: 500px;
-      margin: 0 auto 2rem;
-      line-height: 1.7;
-    }
-
-    .hero-cta {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      justify-content: center;
+        0 0 15px rgba(255,13,81,0.6),
+        0 0 40px rgba(255,13,81,0.3),
+        0 0 80px rgba(255,13,81,0.1);
     }
 
     /* ── Stats Bar — Kentha style with hover effects ── */
@@ -663,9 +650,9 @@
       .nav-links a { font-size: 0.62rem; }
       .hero { height: auto; min-height: 90vh; padding: 6rem 1.5rem 3rem; }
       .hero-content { padding: 1rem; }
-      .hero-name .line1 { font-size: clamp(3.5rem, 18vw, 5rem); }
-      .hero-name .line2 { font-size: clamp(2rem, 10vw, 3rem); letter-spacing: 8px; }
-      .hero-eyebrow span { font-size: 0.55rem; letter-spacing: 3px; }
+      .hero-name .line1 { font-size: clamp(4rem, 20vw, 6rem); }
+      .hero-name .line2 { font-size: clamp(2rem, 12vw, 3.5rem); letter-spacing: 10px; }
+      .hero-eyebrow span { font-size: 0.5rem; letter-spacing: 3px; }
       .stats-wrap { padding: 0 1.5rem; margin-top: -2rem; }
       .stats-bar { grid-template-columns: repeat(2, 1fr); }
       .stat-item { padding: 1.5rem 1rem; }
@@ -722,14 +709,6 @@
       <div class="hero-name">
         <span class="line1">RAVE</span>
         <span class="line2">WILDER</span>
-      </div>
-      <p class="hero-sub">
-        From the underground pulse of house to the hypnotic waves of trance
-        — an immersive journey awaits.
-      </p>
-      <div class="hero-cta">
-        <a href="#events" class="btn btn-primary">Upcoming Events</a>
-        <a href="#contact" class="btn btn-outline">Book DJ Rave</a>
       </div>
     </div>
   </section>
