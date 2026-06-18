@@ -786,50 +786,51 @@
     }
     .link-row:hover .link-arrow { color: var(--accent); transform: translateX(4px); }
 
-    /* ── Booking (Kentha-inspired) ── */
+    /* ── Booking (modern clean form) ── */
         #contact { padding: 6rem 3rem; background: #070707; }
-        #contact .inner { max-width: 1060px; margin: 0 auto; }
+        #contact .inner { max-width: 960px; margin: 0 auto; }
         .booking-grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 3rem;
           margin-top: 2.5rem;
         }
-        /* Left: info card */
-        .booking-info {
-          display: flex;
-          flex-direction: column;
-          gap: 1.5rem;
-        }
         .booking-intro {
-          font-size: 0.95rem;
+          font-size: 0.9rem;
           color: var(--muted);
           line-height: 1.8;
+          margin-bottom: 2rem;
         }
         .booking-channels {
           display: flex;
           flex-direction: column;
-          gap: 1px;
-          border: 1px solid rgba(255,255,255,0.06);
+          gap: 0.75rem;
         }
         .booking-channel {
           display: flex;
           align-items: center;
           gap: 1rem;
-          padding: 1.1rem 1.5rem;
-          background: var(--card-bg);
-          transition: background 0.25s;
+          padding: 0.9rem 1.25rem;
+          background: rgba(255,255,255,0.03);
+          border: 1px solid rgba(255,255,255,0.05);
+          border-radius: 8px;
+          transition: all 0.25s;
+          text-decoration: none;
+          color: inherit;
         }
-        .booking-channel:hover { background: var(--bg3); }
+        .booking-channel:hover {
+          background: rgba(255,13,81,0.04);
+          border-color: rgba(255,13,81,0.15);
+        }
         .booking-channel .icon {
-          width: 38px; height: 38px;
-          border-radius: 50%;
+          width: 34px; height: 34px;
+          border-radius: 8px;
           background: rgba(255,13,81,0.08);
           display: flex;
           align-items: center;
           justify-content: center;
           flex-shrink: 0;
-          font-size: 1.1rem;
+          font-size: 1rem;
         }
         .booking-channel .info { flex: 1; }
         .booking-channel .info .label {
@@ -837,74 +838,71 @@
           font-weight: 700;
           letter-spacing: 1.5px;
           text-transform: uppercase;
-          color: rgba(255,255,255,0.25);
+          color: rgba(255,255,255,0.2);
         }
         .booking-channel .info .value {
-          font-size: 0.9rem;
+          font-size: 0.85rem;
           font-weight: 400;
-          color: var(--accent);
+          color: rgba(255,255,255,0.7);
           margin-top: 1px;
         }
-        .booking-channel .info .value a { color: var(--accent); }
-        .booking-channel .info .value a:hover { color: #ff6b9d; }
-        .booking-channel .arrow {
-          font-size: 1.1rem;
-          color: rgba(255,255,255,0.1);
-          transition: all 0.25s;
-        }
-        .booking-channel:hover .arrow { color: var(--accent); transform: translateX(3px); }
+        .booking-channel:hover .info .value { color: #fff; }
+        .booking-channel .info .value a { color: rgba(255,255,255,0.7); }
+        .booking-channel .info .value a:hover { color: var(--accent); }
 
-        /* Right: booking form */
+        /* Right: form */
         .booking-form {
-          background: var(--card-bg);
+          background: rgba(255,255,255,0.02);
           border: 1px solid rgba(255,255,255,0.06);
-          border-radius: 4px;
+          border-radius: 12px;
           padding: 2rem;
         }
         .booking-form .form-title {
-          font-size: 1rem;
+          font-size: 1.1rem;
           font-weight: 700;
           color: #fff;
           margin-bottom: 1.5rem;
-          letter-spacing: 0.5px;
+          letter-spacing: -0.3px;
         }
         .form-group {
-          margin-bottom: 1rem;
+          margin-bottom: 1.25rem;
         }
         .form-group label {
           display: block;
-          font-size: 0.65rem;
+          font-size: 0.7rem;
           font-weight: 600;
-          letter-spacing: 1.5px;
-          text-transform: uppercase;
-          color: rgba(255,255,255,0.3);
+          letter-spacing: 0.5px;
+          color: var(--accent);
           margin-bottom: 0.4rem;
         }
         .form-group input,
         .form-group textarea {
           width: 100%;
-          padding: 0.75rem 1rem;
+          padding: 0.8rem 1rem;
           background: rgba(255,255,255,0.04);
           border: 1px solid rgba(255,255,255,0.08);
-          border-radius: 3px;
+          border-radius: 8px;
           color: var(--text);
           font-family: 'Open Sans', sans-serif;
           font-size: 0.85rem;
-          transition: border-color 0.25s;
+          transition: all 0.25s;
           outline: none;
         }
         .form-group input:focus,
         .form-group textarea:focus {
           border-color: var(--accent);
+          background: rgba(255,13,81,0.04);
+          box-shadow: 0 0 0 3px rgba(255,13,81,0.06);
         }
         .form-group textarea {
           resize: vertical;
-          min-height: 100px;
+          min-height: 90px;
         }
         .form-submit {
           width: 100%;
-          padding: 0.9rem;
+          padding: 0.85rem;
           font-size: 0.75rem;
+          border-radius: 8px;
         }
     /* ── Player Bar ── */
     .player-bar {
