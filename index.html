@@ -786,48 +786,126 @@
     }
     .link-row:hover .link-arrow { color: var(--accent); transform: translateX(4px); }
 
-    /* ── Contact ── */
-    #contact { padding: 6rem 3rem; background: #070707; }
-    #contact .inner { max-width: 900px; margin: 0 auto; }
-    .contact-wrap {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3rem;
-      margin-top: 2.5rem;
-    }
-    .contact-wrap p {
-      font-size: 0.95rem;
-      color: var(--muted);
-      line-height: 1.8;
-    }
-    .contact-detail {
-      display: flex;
-      flex-direction: column;
-    }
-    .contact-item {
-      display: flex;
-      align-items: center;
-      padding: 1rem 1.5rem;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-      background: var(--card-bg);
-    }
-    .contact-item:last-child { border-bottom: none; }
-    .contact-label {
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.25);
-      min-width: 80px;
-    }
-    .contact-value {
-      font-size: 0.9rem;
-      font-weight: 400;
-      color: var(--accent);
-    }
-    .contact-value a { color: var(--accent); transition: color 0.2s; }
-    .contact-value a:hover { color: #ff6b9d; }
+    /* ── Booking (Kentha-inspired) ── */
+        #contact { padding: 6rem 3rem; background: #070707; }
+        #contact .inner { max-width: 1060px; margin: 0 auto; }
+        .booking-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 3rem;
+          margin-top: 2.5rem;
+        }
+        /* Left: info card */
+        .booking-info {
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+        .booking-intro {
+          font-size: 0.95rem;
+          color: var(--muted);
+          line-height: 1.8;
+        }
+        .booking-channels {
+          display: flex;
+          flex-direction: column;
+          gap: 1px;
+          border: 1px solid rgba(255,255,255,0.06);
+        }
+        .booking-channel {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          padding: 1.1rem 1.5rem;
+          background: var(--card-bg);
+          transition: background 0.25s;
+        }
+        .booking-channel:hover { background: var(--bg3); }
+        .booking-channel .icon {
+          width: 38px; height: 38px;
+          border-radius: 50%;
+          background: rgba(255,13,81,0.08);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          font-size: 1.1rem;
+        }
+        .booking-channel .info { flex: 1; }
+        .booking-channel .info .label {
+          font-size: 0.6rem;
+          font-weight: 700;
+          letter-spacing: 1.5px;
+          text-transform: uppercase;
+          color: rgba(255,255,255,0.25);
+        }
+        .booking-channel .info .value {
+          font-size: 0.9rem;
+          font-weight: 400;
+          color: var(--accent);
+          margin-top: 1px;
+        }
+        .booking-channel .info .value a { color: var(--accent); }
+        .booking-channel .info .value a:hover { color: #ff6b9d; }
+        .booking-channel .arrow {
+          font-size: 1.1rem;
+          color: rgba(255,255,255,0.1);
+          transition: all 0.25s;
+        }
+        .booking-channel:hover .arrow { color: var(--accent); transform: translateX(3px); }
 
+        /* Right: booking form */
+        .booking-form {
+          background: var(--card-bg);
+          border: 1px solid rgba(255,255,255,0.06);
+          border-radius: 4px;
+          padding: 2rem;
+        }
+        .booking-form .form-title {
+          font-size: 1rem;
+          font-weight: 700;
+          color: #fff;
+          margin-bottom: 1.5rem;
+          letter-spacing: 0.5px;
+        }
+        .form-group {
+          margin-bottom: 1rem;
+        }
+        .form-group label {
+          display: block;
+          font-size: 0.65rem;
+          font-weight: 600;
+          letter-spacing: 1.5px;
+          text-transform: uppercase;
+          color: rgba(255,255,255,0.3);
+          margin-bottom: 0.4rem;
+        }
+        .form-group input,
+        .form-group textarea {
+          width: 100%;
+          padding: 0.75rem 1rem;
+          background: rgba(255,255,255,0.04);
+          border: 1px solid rgba(255,255,255,0.08);
+          border-radius: 3px;
+          color: var(--text);
+          font-family: 'Open Sans', sans-serif;
+          font-size: 0.85rem;
+          transition: border-color 0.25s;
+          outline: none;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+          border-color: var(--accent);
+        }
+        .form-group textarea {
+          resize: vertical;
+          min-height: 100px;
+        }
+        .form-submit {
+          width: 100%;
+          padding: 0.9rem;
+          font-size: 0.75rem;
+        }
     /* ── Player Bar ── */
     .player-bar {
       position: fixed; bottom: 0; left: 0; right: 0;
@@ -935,7 +1013,7 @@
       #links { padding: 4rem 1.5rem; }
       .links-grid { grid-template-columns: 1fr; }
       #contact { padding: 4rem 1.5rem; }
-      .contact-wrap { grid-template-columns: 1fr; gap: 2rem; }
+            .booking-grid { grid-template-columns: 1fr; gap: 2rem; }
       .container { padding: 0 1.5rem; }
       #signature { padding: 4rem 1.5rem; }
       .sig-grid { grid-template-columns: 1fr; }
@@ -1212,30 +1290,79 @@
 
   <div class="divider"></div>
 
-  <!-- ═══ CONTACT ═══ -->
-  <section id="contact">
-    <div class="inner">
-      <p class="section-label">Bookings</p>
-      <h2 class="section-heading">Book DJ Rave</h2>
-      <div class="contact-wrap">
-        <p>Want DJ Rave at your venue, event, or club night? Reach out in-world or through the group. All genres covered — from deep underground house to full-send EDM.</p>
-        <div class="contact-detail">
-          <div class="contact-item">
-            <span class="contact-label">In-World</span>
-            <span class="contact-value">rave.wilder</span>
+  <!-- ═══ CONTACT / BOOKING ═══ -->
+    <section id="contact">
+      <div class="inner">
+        <p class="section-label">Bookings</p>
+        <h2 class="section-heading">Book DJ Rave</h2>
+        <div class="booking-grid">
+          <div class="booking-info">
+            <p class="booking-intro">
+              Want DJ Rave at your venue, event, or club night? All genres covered — from deep underground house to full-send EDM. Reach out through any channel below.
+            </p>
+            <div class="booking-channels">
+              <div class="booking-channel">
+                <div class="icon">🎮</div>
+                <div class="info">
+                  <div class="label">In-World</div>
+                  <div class="value">rave.wilder</div>
+                </div>
+                <span class="arrow">→</span>
+              </div>
+              <div class="booking-channel">
+                <div class="icon">📸</div>
+                <div class="info">
+                  <div class="label">Primfeed</div>
+                  <div class="value"><a href="https://www.primfeed.com/rave.wilder" target="_blank">@rave.wilder</a></div>
+                </div>
+                <span class="arrow">→</span>
+              </div>
+              <div class="booking-channel">
+                <div class="icon">👥</div>
+                <div class="info">
+                  <div class="label">SL Group</div>
+                  <div class="value"><a href="https://world.secondlife.com/group/b8f24ce8-15bb-6223-b876-d0d889b22b09" target="_blank">DJ Rave's Event Group</a></div>
+                </div>
+                <span class="arrow">→</span>
+              </div>
+              <div class="booking-channel">
+                <div class="icon">🎧</div>
+                <div class="info">
+                  <div class="label">Mixes</div>
+                  <div class="value"><a href="https://www.mixcloud.com/djravewilder/" target="_blank">mixcloud.com/djravewilder</a></div>
+                </div>
+                <span class="arrow">→</span>
+              </div>
+            </div>
           </div>
-          <div class="contact-item">
-            <span class="contact-label">Primfeed</span>
-            <span class="contact-value"><a href="https://www.primfeed.com/rave.wilder" target="_blank">primfeed.com/rave.wilder</a></span>
-          </div>
-          <div class="contact-item">
-            <span class="contact-label">Group</span>
-            <span class="contact-value"><a href="https://world.secondlife.com/group/b8f24ce8-15bb-6223-b876-d0d889b22b09" target="_blank">DJ Rave's Event Group</a></span>
+          <div class="booking-form">
+            <p class="form-title">Send a Booking Request</p>
+            <form action="https://www.rsigalaxy.com/mailer.php" method="post">
+              <div class="form-group">
+                <label for="booking-name">Your Name *</label>
+                <input type="text" id="booking-name" name="name" required placeholder="e.g. Jane Doe">
+              </div>
+              <div class="form-group">
+                <label for="booking-email">Your Email *</label>
+                <input type="email" id="booking-email" name="email" required placeholder="e.g. jane@venue.com">
+              </div>
+              <div class="form-group">
+                <label for="booking-subject">Subject</label>
+                <input type="text" id="booking-subject" name="subject" placeholder="e.g. Booking Request — Sinful Saturday">
+              </div>
+              <div class="form-group">
+                <label for="booking-message">Your Message</label>
+                <textarea id="booking-message" name="message" placeholder="Tell me about your venue, date, and what you're looking for..."></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary form-submit">Send Request</button>
+            </form>
+            <p style="font-size:0.65rem;color:rgba(255,255,255,0.15);margin-top:1rem;text-align:center;">
+                        Your message will be sent directly to my email
+                      </p>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
   <!-- ═══ FOOTER ═══ -->
   <footer>
