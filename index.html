@@ -1385,8 +1385,9 @@
     }
 
     function nextBiweekly(dayOfWeek, knownOnDate) {
-      const anchor = new Date(knownOnDate);
-      anchor.setHours(0,0,0,0);
+          const parts = knownOnDate.split('-');
+          const anchor = new Date(+parts[0], +parts[1] - 1, +parts[2]);
+          anchor.setHours(0,0,0,0);
       const today = new Date();
       today.setHours(0,0,0,0);
       const msPerWeek = 7 * 24 * 60 * 60 * 1000;
