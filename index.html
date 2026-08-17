@@ -962,9 +962,71 @@
     .player-play.playing { background: var(--accent); }
     .player-play.playing svg { fill: #fff; margin-left: 0; }
     .player-play:hover { background: var(--accent); }
-    .player-play:hover svg { fill: #fff; }
+        .player-play:hover svg { fill: #fff; }
 
-    /* ── Footer ── */
+        /* ── Volume Slider ── */
+        .player-volume {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          flex-shrink: 0;
+        }
+        .volume-icon {
+          width: 14px; height: 14px;
+          fill: var(--muted);
+          flex-shrink: 0;
+          transition: fill 0.2s;
+        }
+        .player-volume:hover .volume-icon {
+          fill: var(--text);
+        }
+        .volume-slider {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 80px;
+          height: 3px;
+          background: rgba(255,255,255,0.12);
+          border-radius: 2px;
+          outline: none;
+          cursor: pointer;
+          transition: background 0.2s;
+        }
+        .volume-slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 12px; height: 12px;
+          border-radius: 50%;
+          background: var(--accent);
+          border: none;
+          cursor: pointer;
+          transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .volume-slider::-webkit-slider-thumb:hover {
+          transform: scale(1.25);
+          box-shadow: 0 0 12px rgba(255,13,81,0.4);
+        }
+        .volume-slider::-moz-range-thumb {
+          width: 12px; height: 12px;
+          border-radius: 50%;
+          background: var(--accent);
+          border: none;
+          cursor: pointer;
+        }
+        .volume-slider.muted::-webkit-slider-thumb {
+          background: #555;
+        }
+        .volume-slider.muted::-moz-range-thumb {
+          background: #555;
+        }
+        .volume-slider::-webkit-slider-runnable-track {
+          height: 3px;
+          border-radius: 2px;
+        }
+        @media (max-width: 768px) {
+          .volume-slider { width: 50px; }
+        }
+
+        /* ── Footer ── */
     footer {
       padding: 3rem;
       text-align: center;
@@ -1365,8 +1427,12 @@
         <div class="player-track" id="playerTrack">DJ Rave — Live Mix</div>
       </div>
       <div class="player-listeners" id="playerListeners"></div>
-    </div>
-  </div>
+          </div>
+          <div class="player-volume">
+            <svg class="volume-icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8.5v7a4.49 4.49 0 0 0 2.5-3.5zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+            <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.05" value="0.8">
+          </div>
+        </div>
 
   <audio id="playerAudio" preload="none"></audio>
 
@@ -1521,9 +1587,34 @@
         playBtn.classList.remove('playing');
         playing = false;
       }
-    });
+          });
 
-    const npDot = document.getElementById('playerDot');
+          /* ── Volume Control ── */
+          const volumeSlider = document.getElementById('volumeSlider');
+
+          // Load saved volume or default to 0.8
+          const savedVolume = localStorage.getItem('playerVolume');
+          if (savedVolume !== null) {
+            const vol = parseFloat(savedVolume);
+            volumeSlider.value = vol;
+            audio.volume = vol;
+            if (vol === 0) volumeSlider.classList.add('muted');
+          } else {
+            audio.volume = 0.8;
+          }
+
+          volumeSlider.addEventListener('input', () => {
+            const vol = parseFloat(volumeSlider.value);
+            audio.volume = vol;
+            localStorage.setItem('playerVolume', vol);
+            if (vol === 0) {
+              volumeSlider.classList.add('muted');
+            } else {
+              volumeSlider.classList.remove('muted');
+            }
+          });
+
+          const npDot = document.getElementById('playerDot');
     const npLabel = document.getElementById('playerLabel');
     const npTrack = document.getElementById('playerTrack');
     const npListeners = document.getElementById('playerListeners');
